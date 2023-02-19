@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MultiProperties xmlns="hu.skzs.multiproperties">
+    <Version>1.2</Version>
+    <Name>Localized strings</Name>
+    <Description>Contains the strings for different languages</Description>
+    <Handler>Java Properties Handler</Handler>
+    <Columns>
+        <Key>
+            <Width>200</Width>
+        </Key>
+        <Column>
+            <Name>de</Name>
+            <Description></Description>
+            <Width>150</Width>
+            <HandlerConfiguration>/basic/src/main/properties/i18n/localization_de.properties|false|false|false|false|ISO-8859-1</HandlerConfiguration>
+        </Column>
+        <Column>
+            <Name>en</Name>
+            <Description></Description>
+            <Width>593</Width>
+            <HandlerConfiguration>/basic/src/main/properties/i18n/localization_en.properties|false|false|false|false|ISO-8859-1</HandlerConfiguration>
+        </Column>
+    </Columns>
+    <Records>
+        <Property>
+            <Name>all-disabled</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>false</MultiLine>
+            <Value disabled="true"></Value>
+            <Value disabled="true"></Value>
+        </Property>
+        <Property>
+            <Name>all-disabled-with-default</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>false</MultiLine>
+            <DefaultValue>all-disabled-with-default-default</DefaultValue>
+            <Value disabled="true"></Value>
+            <Value disabled="true"></Value>
+        </Property>
+        <Property>
+            <Name>de-only</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>false</MultiLine>
+            <Value disabled="false">de-only-de</Value>
+            <Value disabled="true"></Value>
+        </Property>
+        <Property>
+            <Name>de-only-with-default</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>false</MultiLine>
+            <DefaultValue>de-only-with-default-default</DefaultValue>
+            <Value disabled="false">de-only-with-default-de</Value>
+            <Value disabled="true"></Value>
+        </Property>
+        <Property>
+            <Name>disabled</Name>
+            <Disabled>true</Disabled>
+            <MultiLine>false</MultiLine>
+            <Value disabled="false">disabled-de</Value>
+            <Value disabled="false">disabled-en</Value>
+        </Property>
+        <Property>
+            <Name>disabled-wth-default</Name>
+            <Disabled>true</Disabled>
+            <MultiLine>false</MultiLine>
+            <DefaultValue>disabled-wth-default-default</DefaultValue>
+            <Value disabled="false">disabled-wth-default-de</Value>
+            <Value disabled="false">disabled-wth-default-en</Value>
+        </Property>
+        <Property>
+            <Name>normal</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>false</MultiLine>
+            <Value disabled="false">normal-de</Value>
+            <Value disabled="false">normal-en</Value>
+        </Property>
+        <Property>
+            <Name>normal-with-default</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>false</MultiLine>
+            <DefaultValue>normal-with-default-default</DefaultValue>
+            <Value disabled="false">normal-with-default-de</Value>
+            <Value disabled="false">normal-with-default-en</Value>
+        </Property>
+    </Records>
+</MultiProperties>

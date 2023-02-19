@@ -33,9 +33,9 @@ public class GenerateMojo extends AbstractMojo {
 
   /**
    * Base directory against which relative source (input) file paths are resolved. When this is a relative path, it is
-   * resolved against the <code>baseDir</code>. Defaults to the <code>src/main/i18n</code> directory.
+   * resolved against the <code>baseDir</code>. Defaults to the <code>src/main/properties</code> directory.
    */
-  @Parameter(property = "baseSourceDir", defaultValue = "src/main/i18n")
+  @Parameter(property = "baseSourceDir", defaultValue = "src/main/properties")
   private File baseSourceDir;
 
   /**
@@ -121,7 +121,6 @@ public class GenerateMojo extends AbstractMojo {
       multipropertiesFiles.getIncludes().add("**/*.multiproperties");
     }
     if (baseTargetDir == null) {
-
     }
   }
 }
