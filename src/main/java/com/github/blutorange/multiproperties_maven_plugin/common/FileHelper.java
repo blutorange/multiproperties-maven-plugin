@@ -9,13 +9,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.codehaus.plexus.util.DirectoryScanner;
 
 import com.github.blutorange.multiproperties_maven_plugin.mojo.FileSet;
@@ -50,7 +51,16 @@ public final class FileHelper {
    * @return An absolute path, the result of resolving target against the given base directory.
    */
   public static Path resolve(Path baseDir, Path target) {
-    return baseDir.resolve(target).toAbsolutePath();
+    return target != null ? baseDir.resolve(target).toAbsolutePath() : baseDir;
+  }
+
+  /**
+   * @param baseDir Base directory.
+   * @param target Target to resolve.
+   * @return An absolute path, the result of resolving target against the given base directory.
+   */
+  public static Path resolve(Path baseDir, File target) {
+    return resolve(baseDir, target != null ? target.toPath() : null);
   }
 
   /**
@@ -77,10 +87,10 @@ public final class FileHelper {
     final var excludesArray = excludes.toArray(String[]::new);
 
     return IntStream.range(0, includes.size()) //
-        .mapToObj(i -> Pair.of(i, includes.get(i))) //
+        .mapToObj(i -> Map.entry(i, includes.get(i))) //
         .flatMap(include -> {
           final var scanner = new DirectoryScanner();
-          scanner.setIncludes(new String[] { include.getRight() });
+          scanner.setIncludes(new String[] { include.getValue() });
           scanner.setExcludes(excludesArray);
           scanner.addDefaultExcludes();
           scanner.setBasedir(baseDir.toFile());
@@ -88,11 +98,11 @@ public final class FileHelper {
           return Arrays.stream(scanner.getIncludedFiles()) //
               .map(includedFilename -> {
                 final var includedFile = baseDir.resolve(includedFilename).toAbsolutePath();
-                return Pair.of(include.getLeft(), includedFile);
+                return Map.entry(include.getKey(), includedFile);
               });
         }) //
-        .sorted() //
-        .map(Pair::getRight) //
+        .sorted(Comparator.comparing(Map.Entry::getKey)) //
+        .map(Map.Entry::getValue) //
         .filter(distinctByKey(p -> p.toString())) //
         .collect(toList());
   }

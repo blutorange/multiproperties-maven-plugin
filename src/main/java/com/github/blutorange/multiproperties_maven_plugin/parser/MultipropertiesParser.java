@@ -5,8 +5,6 @@ import static com.github.blutorange.multiproperties_maven_plugin.common.StringHe
 import java.io.IOException;
 import java.nio.file.Path;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpression;
@@ -14,6 +12,9 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.xml.sax.SAXException;
+
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 
 /**
  * Utility methods to parse multiproperties files.

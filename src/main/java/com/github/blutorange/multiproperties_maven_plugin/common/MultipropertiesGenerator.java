@@ -43,7 +43,8 @@ public final class MultipropertiesGenerator {
       final var handlerConfiguration = entry.getValue();
       logger.info(String.format("Processing column <%s>", columnKey));
       final var properties = getPropertiesForColumn(allProperties, columnKey);
-      handler.handleProperties(handlerConfiguration, properties, targetDir);
+      final var params = new OutputParams(logger, targetDir, handlerConfiguration, properties);
+      handler.handleProperties(params);
     }
   }
 

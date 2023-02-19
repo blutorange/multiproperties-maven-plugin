@@ -7,8 +7,6 @@ import static java.nio.file.StandardOpenOption.WRITE;
 
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Map;
 import java.util.Properties;
 
 final class JavaPropertiesHandler implements IOutputHandler {
@@ -18,14 +16,15 @@ final class JavaPropertiesHandler implements IOutputHandler {
   }
 
   @Override
-  public void handleProperties(String configurationString, Map<String, String> properties, Path baseDir) throws Exception {
-    final var configuration = new JavaPropertiesConfiguration(configurationString);
+  public void handleProperties(IOutputParams params) throws Exception {
+    final var configuration = new JavaPropertiesConfiguration(params.getConfiguration());
     final var javaProperties = new Properties();
-    for (final var entry : properties.entrySet()) {
+    for (final var entry : params.getProperties().entrySet()) {
       javaProperties.put(entry.getKey(), entry.getValue());
     }
-    final var outputFile = baseDir.resolve(removeStart(configuration.getOutputPath(), "/"));
+    final var outputFile = params.getBaseDir().resolve(removeStart(configuration.getOutputPath(), "/"));
     final var encoding = configuration.getEncoding();
+    params.getLogger().info(String.format("Writing file <%s> with encoding <%s>", outputFile, encoding));
     try (final var out = Files.newOutputStream(outputFile, CREATE, WRITE, TRUNCATE_EXISTING)) {
       try (final var writer = new OutputStreamWriter(out, encoding)) {
         javaProperties.store(writer, "");

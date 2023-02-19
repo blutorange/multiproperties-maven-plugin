@@ -7,6 +7,7 @@ import static com.github.blutorange.multiproperties_maven_plugin.common.FileHelp
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -40,14 +41,14 @@ public class GenerateMojo extends AbstractMojo {
 
   /**
    * Base directory against which relative output paths in the multiproperties file are resolved. If this this is a
-   * relative path, it is resolved against the <code>baseDir</code>. Defaults to the base directory of the parent Maven
-   * project (or the current Maven project if there is no parent).
+   * relative path, it is resolved against the <code>baseDir</code>. Defaults to the parent directory of the base
+   * directory of the topmost parent Maven project.
    * <p>
    * Note that the Eclipse multiproperties editor plugin resolves paths against the path of the Eclipse project, which
    * we can only guess in a Maven build. For multi-module Maven projects in Eclipse, it appears to use the path of the
    * parent BOM project.
    */
-  @Parameter(property = "baseTargetDir", defaultValue = "target/generated-resources")
+  @Parameter(property = "baseTargetDir")
   private File baseTargetDir;
 
   /**
@@ -79,9 +80,9 @@ public class GenerateMojo extends AbstractMojo {
       return;
     }
 
-    final var basePath = resolve(project.getBasedir().toPath().toAbsolutePath(), baseDir.toPath());
-    final var baseSourcePath = resolve(basePath, baseSourceDir.toPath());
-    final var baseTargetPath = resolve(basePath, baseTargetDir.toPath());
+    final var basePath = resolve(project.getBasedir().toPath().toAbsolutePath(), baseDir);
+    final var baseSourcePath = resolve(basePath, baseSourceDir);
+    final var baseTargetPath = resolve(basePath, baseTargetDir);
 
     if (getLog().isDebugEnabled()) {
       getLog().debug(String.format("Resolved paths: base=<%s>, source=<%s>, target=<%s>", basePath, baseSourcePath, baseTargetPath));
@@ -97,7 +98,7 @@ public class GenerateMojo extends AbstractMojo {
     final var generator = createGenerator(baseSourcePath, baseTargetPath);
 
     for (final var inputFile : inputFiles) {
-      getLog().info(String.format("Processing multiproperties files <%s>.", inputFile));
+      getLog().info(String.format("Processing multiproperties files <%s>", inputFile));
       try {
         generator.process(inputFile);
       }
@@ -111,16 +112,22 @@ public class GenerateMojo extends AbstractMojo {
     final var builder = MultipropertiesGenerator.builder();
     builder.withLogger(getLog());
     builder.withSourceDir(baseSourceDir);
-    builder.withSourceDir(baseTargetDir);
+    builder.withTargetDir(baseTargetDir);
     return builder.build();
   }
 
   private void applyDefaults() {
     if (multipropertiesFiles == null || areAllCollectionsEmpty(multipropertiesFiles.getIncludes(), multipropertiesFiles.getExcludes())) {
       multipropertiesFiles = new FileSet();
+      multipropertiesFiles.setIncludes(new ArrayList<>());
       multipropertiesFiles.getIncludes().add("**/*.multiproperties");
     }
     if (baseTargetDir == null) {
+      var parent = project;
+      while (parent.getParent() != null) {
+        parent = parent.getParent();
+      }
+      baseTargetDir = parent.getBasedir().getParentFile();
     }
   }
 }

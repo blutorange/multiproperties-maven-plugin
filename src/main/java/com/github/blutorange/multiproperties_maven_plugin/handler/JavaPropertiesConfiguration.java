@@ -37,7 +37,7 @@ final class JavaPropertiesConfiguration {
 
   public JavaPropertiesConfiguration(String value) {
     value = defaultIfEmpty(value, "");
-    final var parts = value.split("|");
+    final var parts = value.split("\\|");
     this.outputPath = getString(parts, 0);
     this.insertFileDescriptionAsComment = getBoolean(parts, 1);
     this.insertColumnDescriptionAsComment = getBoolean(parts, 2);
