@@ -1,6 +1,31 @@
 # multiproperties-maven-plugin
 
-Maven plugin for generating derived files from a multiproperties file, see https://github.com/skazsi/multiproperties and https://marketplace.eclipse.org/content/multiproperties
+Maven plugin for generating derived files from a multiproperties file, see 
+
+* https://github.com/skazsi/multiproperties 
+* https://marketplace.eclipse.org/content/multiproperties
+
+```xml
+<plugin>
+	<groupId>com.github.blutorange</groupId>
+	<artifactId>multiproperties-maven-plugin</artifactId>
+	<version>${multiproperties-maven-plugin.version}</version>
+	<executions>
+		<execution>
+			<goals>
+				<goal>generate</goal>
+			</goals>
+		</execution>
+	</executions>
+</plugin>
+```
+
+By default, this processes all `*.multiproperties` files from all resource folders and writes the `*.properties`
+output files. You may want to use the `baseDir`, `baseSourceDir`, `baseTargetDir` and `fileSets` settings
+to configure which files to process.
+
+---
+
 
 Currently there is only an Eclipse addon editor which creates the derived `*.properties` files when the multiproperties file is saved. This is bad because
 
