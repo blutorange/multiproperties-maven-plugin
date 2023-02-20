@@ -1,6 +1,7 @@
 package com.github.blutorange.multiproperties_maven_plugin.handler;
 
 import static com.github.blutorange.multiproperties_maven_plugin.common.StringHelper.defaultIfEmpty;
+import static com.github.blutorange.multiproperties_maven_plugin.common.StringHelper.removeStart;
 
 import java.nio.charset.Charset;
 
@@ -19,20 +20,16 @@ import java.nio.charset.Charset;
 //
 // /fc-backend-common/src/main/resources/i18n/fc_de.properties|false|true|true|false|ISO-8859-1
 final class JavaPropertiesConfiguration {
+  private final boolean disableDefaultValues;
+
   private final String encoding;
+
+  private final boolean insertColumnDescriptionAsComment;
+
+  private final boolean insertFileDescriptionAsComment;
 
   private final String outputPath;
 
-  // TODO
-  private final boolean disableDefaultValues;
-
-  @SuppressWarnings("unused") // this option is not yet supported
-  private final boolean insertColumnDescriptionAsComment;
-
-  @SuppressWarnings("unused") // this option is not yet supported
-  private final boolean insertFileDescriptionAsComment;
-
-  @SuppressWarnings("unused") // this option is not yet supported
   private final boolean writeDisabledPropertiesAsComments;
 
   public JavaPropertiesConfiguration(String value) {
@@ -50,6 +47,26 @@ final class JavaPropertiesConfiguration {
     return Charset.forName(encoding);
   }
 
+  public String getOutputPath() {
+    return removeStart(outputPath, "/");
+  }
+
+  public boolean isDisableDefaultValues() {
+    return disableDefaultValues;
+  }
+
+  public boolean isInsertColumnDescriptionAsComment() {
+    return insertColumnDescriptionAsComment;
+  }
+
+  public boolean isInsertFileDescriptionAsComment() {
+    return insertFileDescriptionAsComment;
+  }
+
+  public boolean isWriteDisabledPropertiesAsComments() {
+    return writeDisabledPropertiesAsComments;
+  }
+
   private static boolean getBoolean(String[] parts, int index) {
     return Boolean.parseBoolean(getString(parts, index));
   }
@@ -59,9 +76,5 @@ final class JavaPropertiesConfiguration {
       return "";
     }
     return parts[index];
-  }
-
-  public String getOutputPath() {
-    return outputPath;
   }
 }

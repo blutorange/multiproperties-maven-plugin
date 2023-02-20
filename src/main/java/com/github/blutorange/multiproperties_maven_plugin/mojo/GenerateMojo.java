@@ -11,7 +11,6 @@ import java.util.ArrayList;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -41,8 +40,8 @@ public class GenerateMojo extends AbstractMojo {
 
   /**
    * Base directory against which relative output paths in the multiproperties file are resolved. If this this is a
-   * relative path, it is resolved against the <code>baseDir</code>. Defaults to the parent directory of the base
-   * directory of the topmost parent Maven project.
+   * relative path, it is resolved against the <code>baseDir</code>. Defaults to the base directory of the topmost
+   * parent Maven project, with the name of that Maven project added.
    * <p>
    * Note that the Eclipse multiproperties editor plugin resolves paths against the path of the Eclipse project, which
    * we can only guess in a Maven build. For multi-module Maven projects in Eclipse, it appears to use the path of the
@@ -50,6 +49,13 @@ public class GenerateMojo extends AbstractMojo {
    */
   @Parameter(property = "baseTargetDir")
   private File baseTargetDir;
+
+  /**
+   * When <code>true</code>, remove the first path segment from the multiproperties output file path. The first segment
+   * is usually the name of the Eclipse project, which may be different from the name of the folder itself.
+   */
+  @Parameter(property = "removeFirstPathSegment", defaultValue = "true")
+  private boolean removeFirstPathSegment;
 
   /**
    * Multiproperties files to process. If the path is relative, it is resolved against the given <code>baseDir</code>,
@@ -61,7 +67,7 @@ public class GenerateMojo extends AbstractMojo {
   @Parameter(property = "multipropertiesFiles")
   private FileSet multipropertiesFiles;
 
-  @Component
+  @Parameter(defaultValue = "${project}", readonly = true)
   private MavenProject project;
 
   /**
@@ -113,6 +119,7 @@ public class GenerateMojo extends AbstractMojo {
     builder.withLogger(getLog());
     builder.withSourceDir(baseSourceDir);
     builder.withTargetDir(baseTargetDir);
+    builder.withRemoveFirstPathSegment(removeFirstPathSegment);
     return builder.build();
   }
 
@@ -127,7 +134,7 @@ public class GenerateMojo extends AbstractMojo {
       while (parent.getParent() != null) {
         parent = parent.getParent();
       }
-      baseTargetDir = parent.getBasedir().getParentFile();
+      baseTargetDir = parent.getBasedir();
     }
   }
 }

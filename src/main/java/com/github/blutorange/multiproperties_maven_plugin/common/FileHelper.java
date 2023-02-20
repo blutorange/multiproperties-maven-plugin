@@ -1,10 +1,12 @@
 package com.github.blutorange.multiproperties_maven_plugin.common;
 
 import static com.github.blutorange.multiproperties_maven_plugin.common.CollectionHelper.isCollectionEmpty;
+import static com.github.blutorange.multiproperties_maven_plugin.common.StringHelper.isEmpty;
 import static java.util.stream.Collectors.toList;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -20,7 +22,6 @@ import java.util.stream.IntStream;
 import org.codehaus.plexus.util.DirectoryScanner;
 
 import com.github.blutorange.multiproperties_maven_plugin.mojo.FileSet;
-
 /**
  * Utility methods for working with paths and files.
  */
@@ -28,39 +29,12 @@ public final class FileHelper {
   private FileHelper() {}
 
   /**
-   * @param base Base path against which to make the path relative.
-   * @param target Target path to make relative.
-   * @return The path of the given {@code target}, relative to the specified {@code base} file.
-   * @throws IOException When the file system could not be accessed.
+   * Creates the given directory and all parent directories if missing. Does nothing if the directory exists already.
+   * @param dir Directory to create.
+   * @throws IOException When a directory could not be created.
    */
-  public static String relativizePath(File base, File target) throws IOException {
-    final Path targetPath = Paths.get(target.getCanonicalPath());
-    if (base == null) {
-      return targetPath.toString();
-    }
-    else {
-      final Path basePath = base.getCanonicalFile().toPath();
-      final String relativePath = basePath.relativize(targetPath).toString();
-      return relativePath;
-    }
-  }
-
-  /**
-   * @param baseDir Base directory.
-   * @param target Target to resolve.
-   * @return An absolute path, the result of resolving target against the given base directory.
-   */
-  public static Path resolve(Path baseDir, Path target) {
-    return target != null ? baseDir.resolve(target).toAbsolutePath() : baseDir;
-  }
-
-  /**
-   * @param baseDir Base directory.
-   * @param target Target to resolve.
-   * @return An absolute path, the result of resolving target against the given base directory.
-   */
-  public static Path resolve(Path baseDir, File target) {
-    return resolve(baseDir, target != null ? target.toPath() : null);
+  public static void createDirectoriesIfMissing(Path dir) throws IOException {
+    Files.createDirectories(dir);
   }
 
   /**
@@ -107,8 +81,55 @@ public final class FileHelper {
         .collect(toList());
   }
 
+  /**
+   * @param base Base path against which to make the path relative.
+   * @param target Target path to make relative.
+   * @return The path of the given {@code target}, relative to the specified {@code base} file.
+   * @throws IOException When the file system could not be accessed.
+   */
+  public static String relativizePath(File base, File target) throws IOException {
+    final Path targetPath = Paths.get(target.getCanonicalPath());
+    if (base == null) {
+      return targetPath.toString();
+    }
+    else {
+      final Path basePath = base.getCanonicalFile().toPath();
+      final String relativePath = basePath.relativize(targetPath).toString();
+      return relativePath;
+    }
+  }
+
+  /**
+   * @param baseDir Base directory.
+   * @param target Target to resolve.
+   * @return An absolute path, the result of resolving target against the given base directory.
+   */
+  public static Path resolve(Path baseDir, File target) {
+    return resolve(baseDir, target != null ? target.toPath() : null);
+  }
+
+  /**
+   * @param baseDir Base directory.
+   * @param target Target to resolve.
+   * @return An absolute path, the result of resolving target against the given base directory.
+   */
+  public static Path resolve(Path baseDir, Path target) {
+    return target != null ? baseDir.resolve(target).toAbsolutePath() : baseDir;
+  }
+
   private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
     final var seen = new HashSet<>();
     return item -> seen.add(keyExtractor.apply(item));
+  }
+
+  public static String removeFirstPathSegmentFromString(String path) {
+    if (isEmpty(path)) {
+      return "";
+    }
+    final var parsed = Paths.get(path);
+    if (parsed.getNameCount() <= 1) {
+      return "";
+    }
+    return parsed.subpath(1, parsed.getNameCount()).toString();
   }
 }

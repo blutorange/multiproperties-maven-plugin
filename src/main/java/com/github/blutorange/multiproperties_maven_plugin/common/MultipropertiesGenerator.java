@@ -1,10 +1,6 @@
 package com.github.blutorange.multiproperties_maven_plugin.common;
 
-import static com.github.blutorange.multiproperties_maven_plugin.common.StringHelper.defaultIfEmpty;
-
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.maven.plugin.logging.Log;
 
@@ -16,6 +12,7 @@ import com.github.blutorange.multiproperties_maven_plugin.parser.Multiproperties
  */
 public final class MultipropertiesGenerator {
   private final Log logger;
+  private final boolean removeFirstPathSegment;
   @SuppressWarnings("unused")
   private final Path sourceDir;
   private final Path targetDir;
@@ -24,6 +21,7 @@ public final class MultipropertiesGenerator {
     this.logger = builder.logger;
     this.sourceDir = builder.sourceDir;
     this.targetDir = builder.targetDir;
+    this.removeFirstPathSegment = builder.removeFirstPathSegment;
   }
 
   /**
@@ -34,16 +32,16 @@ public final class MultipropertiesGenerator {
    */
   public void process(Path file) throws Exception {
     final var parsed = MultipropertiesParser.parse(file);
-    final var allProperties = parsed.getResolvedProperties();
+    final var items = parsed.getItems();
     final var handler = OutputHandlerFactory.forName(parsed.getHandler());
     final var handlerConfigurations = parsed.getHandlerConfigurations();
+    final var fileDescription = parsed.getFileDescription();
     logger.info(String.format("Using output handler <%s>", handler.getName()));
-    for (final var entry : handlerConfigurations.entrySet()) {
-      final var columnKey = entry.getKey();
-      final var handlerConfiguration = entry.getValue();
+    for (final var handlerConfiguration : handlerConfigurations) {
+      final var columnKey = handlerConfiguration.getColumnKey();
+      final var configurationString = handlerConfiguration.getConfigurationString();
       logger.info(String.format("Processing column <%s>", columnKey));
-      final var properties = getPropertiesForColumn(allProperties, columnKey);
-      final var params = new OutputParams(logger, targetDir, handlerConfiguration, properties);
+      final var params = new OutputParams(logger, targetDir, removeFirstPathSegment, configurationString, fileDescription, items, columnKey);
       handler.handleProperties(params);
     }
   }
@@ -55,21 +53,12 @@ public final class MultipropertiesGenerator {
     return new Builder();
   }
 
-  private static Map<String, String> getPropertiesForColumn(Map<String, Map<String, String>> allProperties, String columnKey) {
-    final var properties = new HashMap<String, String>();
-    for (final var entry : allProperties.entrySet()) {
-      final var name = entry.getKey();
-      final var value = entry.getValue().get(columnKey);
-      properties.put(name, defaultIfEmpty(value, ""));
-    }
-    return properties;
-  }
-
   /**
    * A builder for configuring a multiproperties processor.
    */
   public static final class Builder {
     private Log logger;
+    private boolean removeFirstPathSegment;
     private Path sourceDir;
     private Path targetDir;
 
@@ -89,6 +78,13 @@ public final class MultipropertiesGenerator {
     public Builder withLogger(Log logger) {
       this.logger = logger;
       return this;
+    }
+
+    /**
+     * @param removeFirstPathSegment When <code>true</code>, removes the first path segment of each output file path.
+     */
+    public void withRemoveFirstPathSegment(boolean removeFirstPathSegment) {
+      this.removeFirstPathSegment = removeFirstPathSegment;
     }
 
     /**

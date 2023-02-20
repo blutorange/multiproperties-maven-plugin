@@ -1,23 +1,30 @@
 package com.github.blutorange.multiproperties_maven_plugin.common;
 
 import java.nio.file.Path;
-import java.util.Map;
+import java.util.List;
 
 import org.apache.maven.plugin.logging.Log;
 
 import com.github.blutorange.multiproperties_maven_plugin.handler.IOutputParams;
+import com.github.blutorange.multiproperties_maven_plugin.parser.Item;
 
 final class OutputParams implements IOutputParams {
-  private final Log logger;
   private final Path baseDir;
-  private final String configuration;
-  private final Map<String, String> properties;
+  private final String handleConfigurationString;
+  private final Log logger;
+  private final List<Item> items;
+  private final boolean removeFirstPathSegment;
+  private final String columnKey;
+  private final String fileDescription;
 
-  public OutputParams(Log logger, Path baseDir, String configuration, Map<String, String> properties) {
+  public OutputParams(Log logger, Path baseDir, boolean removeFirstPathSegment, String handleConfigurationString, String fileDescription, List<Item> items, String columnKey) {
     this.logger = logger;
     this.baseDir = baseDir;
-    this.configuration = configuration;
-    this.properties = properties;
+    this.removeFirstPathSegment = removeFirstPathSegment;
+    this.handleConfigurationString = handleConfigurationString;
+    this.fileDescription = fileDescription;
+    this.items = items;
+    this.columnKey = columnKey;
   }
 
   @Override
@@ -26,8 +33,8 @@ final class OutputParams implements IOutputParams {
   }
 
   @Override
-  public String getConfiguration() {
-    return configuration;
+  public String getHandlerConfigurationString() {
+    return handleConfigurationString;
   }
 
   @Override
@@ -36,7 +43,22 @@ final class OutputParams implements IOutputParams {
   }
 
   @Override
-  public Map<String, String> getProperties() {
-    return properties;
+  public List<Item> getItems() {
+    return items;
+  }
+
+  @Override
+  public boolean isRemoveFirstPathSegment() {
+    return removeFirstPathSegment;
+  }
+
+  @Override
+  public String getColumnKey() {
+    return columnKey;
+  }
+
+  @Override
+  public String getFileDescription() {
+    return fileDescription;
   }
 }

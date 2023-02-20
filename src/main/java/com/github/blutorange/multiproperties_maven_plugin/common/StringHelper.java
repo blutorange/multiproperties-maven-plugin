@@ -44,4 +44,13 @@ public class StringHelper {
     }
     return value.startsWith(prefix) ? value.substring(prefix.length()) : value;
   }
+
+  public static String padLeft(String value, int length, char padChar) {
+    final var sb = new StringBuilder();
+    for (var i = length - value.length(); i-- > 0;) {
+      sb.append(padChar);
+    }
+    sb.append(value);
+    return sb.toString();
+  }
 }

@@ -12,7 +12,6 @@ Instead generate the properties files from the multiproperties file during the M
 
 Caveats:
 
-* The `Text File Handler` is not supported currently. The Eclipse addon seems to be broken currently and does not generate the text files. If anybody needs this and knows the format of these generated text files, open an issue and let me know.
-* The options for including comments in the Java properties files are not supported for now. I do not see much need for this. If you need this feature, open an issue and let me know.
+* The `Text File Handler` is not supported currently. The Eclipse addon seems to be broken currently and does not generate the text files (or rather, the generated files only contain `nullnullnull...`). If anybody needs this and knows the format of these generated text files, open an issue and let me know.
 
 Other than that, it should generate the same output as the Eclipse addon.

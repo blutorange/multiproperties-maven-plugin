@@ -1,11 +1,16 @@
 package com.github.blutorange.multiproperties_maven_plugin.parser;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * Abstracts a multiproperties file over different versions of the file format.
  */
 public interface IMultiproperties {
+  /**
+   * @return The description of the multiproperties file.
+   */
+  String getFileDescription();
+
   /**
    * Gets the name of the output handler which defines how derived files are generated.
    * @return The name of the output handler.
@@ -17,13 +22,11 @@ public interface IMultiproperties {
    * string for that column.
    * @return A map with all defined output handlers.
    */
-  Map<String, String> getHandlerConfigurations();
+  List<HandlerConfiguration> getHandlerConfigurations();
 
   /**
-   * Gets all resolved properties contained in the multiproperties file. The return value is a map where the key is the
-   * name of the property and the value another map between the column's key (language name) and the value for that
-   * language. Returned properties are resolved against the default as specified in the multiproperties file.
+   * Gets all items contained in the multiproperties file. Default values etc. MUST NOT be resolved.
    * @return A list of all contained properties.
    */
-  Map<String, Map<String, String>> getResolvedProperties();
+  List<Item> getItems();
 }

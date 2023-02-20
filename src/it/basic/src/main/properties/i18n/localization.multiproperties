@@ -2,7 +2,11 @@
 <MultiProperties xmlns="hu.skzs.multiproperties">
     <Version>1.2</Version>
     <Name>Localized strings</Name>
-    <Description>Contains the strings for different languages</Description>
+    <Description>hello
+world
+line3
+
+line4</Description>
     <Handler>Java Properties Handler</Handler>
     <Columns>
         <Key>
@@ -12,18 +16,22 @@
             <Name>de</Name>
             <Description></Description>
             <Width>150</Width>
-            <HandlerConfiguration>/basic/src/main/properties/i18n/localization_de.properties|false|false|false|false|ISO-8859-1</HandlerConfiguration>
+            <HandlerConfiguration>/maven-properties-plugin-basic/src/main/properties/i18n/localization_de.properties|false|false|false|false|ISO-8859-1</HandlerConfiguration>
         </Column>
         <Column>
             <Name>en</Name>
             <Description></Description>
-            <Width>593</Width>
-            <HandlerConfiguration>/basic/src/main/properties/i18n/localization_en.properties|false|false|false|false|ISO-8859-1</HandlerConfiguration>
+            <Width>597</Width>
+            <HandlerConfiguration>/maven-properties-plugin-basic/src/main/properties/i18n/localization_en.properties|false|false|false|false|ISO-8859-1</HandlerConfiguration>
         </Column>
     </Columns>
     <Records>
+        <Comment>
+            <Value>Single line</Value>
+        </Comment>
         <Property>
             <Name>all-disabled</Name>
+            <Description></Description>
             <Disabled>false</Disabled>
             <MultiLine>false</MultiLine>
             <Value disabled="true"></Value>
@@ -39,6 +47,7 @@
         </Property>
         <Property>
             <Name>de-only</Name>
+            <Description></Description>
             <Disabled>false</Disabled>
             <MultiLine>false</MultiLine>
             <Value disabled="false">de-only-de</Value>
@@ -81,6 +90,46 @@
             <DefaultValue>normal-with-default-default</DefaultValue>
             <Value disabled="false">normal-with-default-de</Value>
             <Value disabled="false">normal-with-default-en</Value>
+        </Property>
+        <Property>
+            <Name>empty</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>false</MultiLine>
+            <Value disabled="false"></Value>
+            <Value disabled="false"></Value>
+        </Property>
+        <Empty/>
+        <Empty/>
+        <Comment>
+            <Value>Multiline</Value>
+        </Comment>
+        <Property>
+            <Name>multiline</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">multiline-1-de
+  multiline-2-de</Value>
+            <Value disabled="false">multiline-1-en
+  multiline-2-en</Value>
+        </Property>
+        <Property>
+            <Name>multiline-de-only-with-default</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>true</MultiLine>
+            <DefaultValue>multiline-de-only-with-default-1-default
+  multiline-de-only-with-default-2-default</DefaultValue>
+            <Value disabled="false">multiline-de-only-with-default-1-de
+  multiline-de-only-with-default-2-de</Value>
+            <Value disabled="true"></Value>
+        </Property>
+        <Property>
+            <Name>multiline-disabled</Name>
+            <Disabled>true</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">multiline-disabled-1-de
+multiline-disabled-2-de</Value>
+            <Value disabled="false">multiline-disabled-1-en
+multiline-disabled-2-en</Value>
         </Property>
     </Records>
 </MultiProperties>
