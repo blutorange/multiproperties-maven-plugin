@@ -19,3 +19,6 @@ assertResult.call("insertFileAndColumnDescription");
 assertResult.call("writeDisabledAsComments");
 assertResult.call("disableDefaultValues");
 assertResult.call("utf16");
+assertResult.call("specialChars");
+assertResult.call("specialCharsUtf8");
+assertResult.call("specialCharsUsAscii");

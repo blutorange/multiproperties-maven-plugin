@@ -20,21 +20,27 @@ public class JavaPropertiesWriterTest {
     assertWritesKeyValuePair("delimiterCharacters\\:\\=\\ =foobar", "delimiterCharacters:= ", "foobar");
     assertWritesKeyValuePair("key=Line\\rbreak\\n\\\n\ttab\\tfeed\\f", "key", "Line\rbreak\ntab\tfeed\f");
     assertWritesKeyValuePair("key=Line\\n\\\n\t\\  break", "key", "Line\n  break");
-    assertWritesKeyValuePair("key=c:\\\\wiki\\\\templates", "key", "c:\\wiki\\templates");
-    assertWritesKeyValuePair("key=\\u3053\\u3093\\u306b\\u3061\\u306f", "key", "こんにちは");
-    assertWritesKeyValuePair("key=\\u1f4ab", "key", "\u1f4ab");
+    assertWritesKeyValuePair("key=c\\:\\\\wiki\\\\templates", "key", "c:\\wiki\\templates");
+    assertWritesKeyValuePair("key=\\u3053\\u3093\\u306B\\u3061\\u306F", "key", "こんにちは");
+    assertWritesKeyValuePair("key=\\u0001\\uF4AB", "key", "\u0001\uf4ab");
     assertWritesKeyValuePair("key=\\  foobar  ", "key", "  foobar  ");
     assertWritesKeyValuePair("key=\\u0015", "key", "\u0015");
     assertWritesKeyValuePair("key=こんにちは", "key", "こんにちは", StandardCharsets.UTF_8);
+    assertWritesKeyValuePair("key=\\uD83D\\uDCAB", "key", "💫", StandardCharsets.ISO_8859_1);
+    assertWritesKeyValuePair("key=💫", "key", "💫", StandardCharsets.UTF_8);
+    assertWritesKeyValuePair("key=\\:\\!\\#\\=", "key", ":!#=", StandardCharsets.ISO_8859_1);
+    assertWritesKeyValuePair("key=:!#=", "key", ":!#=", StandardCharsets.UTF_8);
+    assertWritesKeyValuePair("key=[\\\\]", "key", "[\\]", StandardCharsets.ISO_8859_1);
+    assertWritesKeyValuePair("key=[\\\\]", "key", "[\\]", StandardCharsets.UTF_8);
   }
 
   @Test
   public void testWriteKeyValuePairAsComment() throws IOException {
     assertWritesKeyValuePairAsComment("#delimiterCharacters\\:\\=\\ =foobar", "delimiterCharacters:= ", "foobar");
     assertWritesKeyValuePairAsComment("#key=Line\\rbreak\\n\\\n#\ttab\\tfeed\\f", "key", "Line\rbreak\ntab\tfeed\f");
-    assertWritesKeyValuePairAsComment("#key=c:\\\\wiki\\\\templates", "key", "c:\\wiki\\templates");
-    assertWritesKeyValuePairAsComment("#key=\\u3053\\u3093\\u306b\\u3061\\u306f", "key", "こんにちは");
-    assertWritesKeyValuePairAsComment("#key=\\u1f4ab", "key", "\u1f4ab");
+    assertWritesKeyValuePairAsComment("#key=c\\:\\\\wiki\\\\templates", "key", "c:\\wiki\\templates");
+    assertWritesKeyValuePairAsComment("#key=\\u3053\\u3093\\u306B\\u3061\\u306F", "key", "こんにちは");
+    assertWritesKeyValuePairAsComment("#key=\\u0001\\uF4AB", "key", "\u0001\uf4ab");
     assertWritesKeyValuePairAsComment("#key=\\  foobar  ", "key", "  foobar  ");
   }
 

@@ -7,6 +7,8 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 
 final class JavaPropertiesWriter {
   private static final String LINE_SEPARATOR = "\r\n";
@@ -66,7 +68,7 @@ final class JavaPropertiesWriter {
 
   private static String escapeValue(String value, CharsetEncoder encoder) {
     var nonWhitespace = false;
-    final var it = value.chars().iterator();
+    final var it = value.codePoints().iterator();
     final var sb = new StringBuilder();
     while (it.hasNext()) {
       final var c = it.nextInt();
@@ -100,12 +102,28 @@ final class JavaPropertiesWriter {
           break;
         default:
           nonWhitespace = true;
-          if (c >= 32 && c != 127 && encoder.canEncode(Character.toString(c))) {
+          final var alwaysEscape = encoder.charset().equals(StandardCharsets.ISO_8859_1) //
+              ? c >= 0x7f || c == '!' || c == '#' || c == ':' || c == '=' //
+              : false;
+          if (c >= 32 && !alwaysEscape && encoder.canEncode(Character.toString(c))) {
             sb.appendCodePoint(c);
           }
           else {
-            sb.append("\\u");
-            sb.append(padLeft(Integer.toString(c, 16), 4, '0'));
+            if (c == '!' || c == '#' || c == ':' || c == '=') {
+              sb.append("\\").appendCodePoint(c);
+            }
+            else {
+              if (c <= 0xFFFF) {
+                sb.append("\\u");
+                sb.append(padLeft(Integer.toString(c, 16).toUpperCase(Locale.ROOT), 4, '0'));
+              }
+              else {
+                sb.append("\\u");
+                sb.append(padLeft(Integer.toString(Character.highSurrogate(c), 16).toUpperCase(Locale.ROOT), 4, '0'));
+                sb.append("\\u");
+                sb.append(padLeft(Integer.toString(Character.lowSurrogate(c), 16).toUpperCase(Locale.ROOT), 4, '0'));
+              }
+            }
           }
           break;
       }
