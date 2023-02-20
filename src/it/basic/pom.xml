@@ -12,17 +12,16 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>com.github.blutorange</groupId>
-				<artifactId>multiproperties-maven-plugin</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
+				<groupId>@project.groupId@</groupId>
+				<artifactId>@project.artifactId@</artifactId>
+				<version>@project.version@</version>
 				<executions>
 					<execution>
 						<id>default-generate</id>
 						<goals>
 							<goal>generate</goal>
 						</goals>
-						<configuration>
-						</configuration>
+						<configuration></configuration>
 					</execution>
 				</executions>
 			</plugin>

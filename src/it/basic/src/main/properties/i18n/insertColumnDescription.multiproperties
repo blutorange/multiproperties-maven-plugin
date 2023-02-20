@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MultiProperties xmlns="hu.skzs.multiproperties">
+    <Version>1.2</Version>
+    <Name>Localized strings</Name>
+    <Description>hello
+world
+line3
+
+line4</Description>
+    <Handler>Java Properties Handler</Handler>
+    <Columns>
+        <Key>
+            <Width>200</Width>
+        </Key>
+        <Column>
+            <Name>de</Name>
+            <Description></Description>
+            <Width>150</Width>
+            <HandlerConfiguration>/maven-properties-plugin-basic/src/main/properties/i18n/insertColumnDescription_de.properties|false|true|false|false|ISO-8859-1</HandlerConfiguration>
+        </Column>
+        <Column>
+            <Name>en</Name>
+            <Description></Description>
+            <Width>597</Width>
+            <HandlerConfiguration>/maven-properties-plugin-basic/src/main/properties/i18n/insertColumnDescription_en.properties|false|true|false|false|ISO-8859-1</HandlerConfiguration>
+        </Column>
+    </Columns>
+    <Records>
+        <Comment>
+            <Value>Single line</Value>
+        </Comment>
+        <Property>
+            <Name>all-disabled</Name>
+            <Description>111
+222</Description>
+            <Disabled>false</Disabled>
+            <MultiLine>false</MultiLine>
+            <Value disabled="true"></Value>
+            <Value disabled="true"></Value>
+        </Property>
+        <Property>
+            <Name>all-disabled-with-default</Name>
+            <Description>333</Description>
+            <Disabled>false</Disabled>
+            <MultiLine>false</MultiLine>
+            <DefaultValue>all-disabled-with-default-default</DefaultValue>
+            <Value disabled="true"></Value>
+            <Value disabled="true"></Value>
+        </Property>
+        <Property>
+            <Name>de-only</Name>
+            <Description>444</Description>
+            <Disabled>false</Disabled>
+            <MultiLine>false</MultiLine>
+            <Value disabled="false">de-only-de</Value>
+            <Value disabled="true"></Value>
+        </Property>
+        <Property>
+            <Name>de-only-with-default</Name>
+            <Description>555</Description>
+            <Disabled>false</Disabled>
+            <MultiLine>false</MultiLine>
+            <DefaultValue>de-only-with-default-default</DefaultValue>
+            <Value disabled="false">de-only-with-default-de</Value>
+            <Value disabled="true"></Value>
+        </Property>
+        <Property>
+            <Name>disabled</Name>
+            <Description>666</Description>
+            <Disabled>true</Disabled>
+            <MultiLine>false</MultiLine>
+            <Value disabled="false">disabled-de</Value>
+            <Value disabled="false">disabled-en</Value>
+        </Property>
+        <Property>
+            <Name>disabled-wth-default</Name>
+            <Description>777</Description>
+            <Disabled>true</Disabled>
+            <MultiLine>false</MultiLine>
+            <DefaultValue>disabled-wth-default-default</DefaultValue>
+            <Value disabled="false">disabled-wth-default-de</Value>
+            <Value disabled="false">disabled-wth-default-en</Value>
+        </Property>
+        <Property>
+            <Name>normal</Name>
+            <Description>888</Description>
+            <Disabled>false</Disabled>
+            <MultiLine>false</MultiLine>
+            <Value disabled="false">normal-de</Value>
+            <Value disabled="false">normal-en</Value>
+        </Property>
+        <Property>
+            <Name>normal-with-default</Name>
+            <Description>999</Description>
+            <Disabled>false</Disabled>
+            <MultiLine>false</MultiLine>
+            <DefaultValue>normal-with-default-default</DefaultValue>
+            <Value disabled="false">normal-with-default-de</Value>
+            <Value disabled="false">normal-with-default-en</Value>
+        </Property>
+        <Property>
+            <Name>empty</Name>
+            <Description>10_10_10</Description>
+            <Disabled>false</Disabled>
+            <MultiLine>false</MultiLine>
+            <Value disabled="false"></Value>
+            <Value disabled="false"></Value>
+        </Property>
+        <Empty/>
+        <Empty/>
+        <Comment>
+            <Value>Multiline</Value>
+        </Comment>
+        <Property>
+            <Name>multiline</Name>
+            <Description>11_11_11</Description>
+            <Disabled>false</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">multiline-1-de
+  multiline-2-de</Value>
+            <Value disabled="false">multiline-1-en
+  multiline-2-en</Value>
+        </Property>
+        <Property>
+            <Name>multiline-de-only-with-default</Name>
+            <Description>12_12_12</Description>
+            <Disabled>false</Disabled>
+            <MultiLine>true</MultiLine>
+            <DefaultValue>multiline-de-only-with-default-1-default
+  multiline-de-only-with-default-2-default</DefaultValue>
+            <Value disabled="false">multiline-de-only-with-default-1-de
+  multiline-de-only-with-default-2-de</Value>
+            <Value disabled="true"></Value>
+        </Property>
+        <Property>
+            <Name>multiline-disabled</Name>
+            <Description>13_13_13</Description>
+            <Disabled>true</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">multiline-disabled-1-de
+multiline-disabled-2-de</Value>
+            <Value disabled="false">multiline-disabled-1-en
+multiline-disabled-2-en</Value>
+        </Property>
+    </Records>
+</MultiProperties>

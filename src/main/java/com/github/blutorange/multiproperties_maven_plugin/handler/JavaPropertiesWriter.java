@@ -5,47 +5,57 @@ import static com.github.blutorange.multiproperties_maven_plugin.common.StringHe
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 
 final class JavaPropertiesWriter {
   private static final String LINE_SEPARATOR = "\r\n";
 
   private final Writer writer;
 
-  public JavaPropertiesWriter(Writer writer) {
+  private final CharsetEncoder encoder;
+
+  public JavaPropertiesWriter(Writer writer, Charset charset) {
     this.writer = writer;
+    this.encoder = charset.newEncoder();
   }
 
   public void writeComment(String value, boolean whitespace) throws IOException {
-    final var lines = value.split("\\r\\n|\\n|\\r");
-    for (final var line : lines) {
-      writer.write("#");
-      if (whitespace) {
-        writer.write(" ");
-      }
-      writer.write(line);
-      writeLineBreak();
-    }
+    writeComment(value, whitespace, LINE_SEPARATOR);
   }
 
   public void writeKeyValuePair(String key, String value) throws IOException {
-    writeKeyValuePair(writer, key, value);
+    writeKeyValuePair(writer, encoder, key, value);
   }
 
   public void writeKeyValuePairAsComment(String key, String value) throws IOException {
     final var writer = new StringWriter();
-    writeKeyValuePair(writer, key, value);
-    writeComment(writer.toString(), false);
+    writeKeyValuePair(writer, encoder, key, value);
+    writeComment(writer.toString(), false, "\n");
   }
 
   public void writeLineBreak() throws IOException {
     writer.write(LINE_SEPARATOR);
   }
 
-  public static void writeKeyValuePair(Writer writer, String key, String value) throws IOException {
+  private void writeComment(String value, boolean whitespace, String lineSeparator) throws IOException {
+    final var lines = value.split("\\r\\n|\\n|\\r");
+    for (var index = 0; index < lines.length; index += 1) {
+      final var line = lines[index];
+      writer.write("#");
+      if (whitespace) {
+        writer.write(" ");
+      }
+      writer.write(line);
+      writer.write(index == lines.length - 1 ? LINE_SEPARATOR : lineSeparator);
+    }
+  }
+
+  public static void writeKeyValuePair(Writer writer, CharsetEncoder charset, String key, String value) throws IOException {
     writer.write(escapeKey(key));
     writer.write("=");
     if (value != null) {
-      writer.write(escapeValue(value));
+      writer.write(escapeValue(value, charset));
     }
     writer.write(LINE_SEPARATOR);
   }
@@ -54,7 +64,7 @@ final class JavaPropertiesWriter {
     return name.replaceAll("([=: \\t\\f])", "\\\\$1");
   }
 
-  private static String escapeValue(String value) {
+  private static String escapeValue(String value, CharsetEncoder encoder) {
     var nonWhitespace = false;
     final var it = value.chars().iterator();
     final var sb = new StringBuilder();
@@ -90,7 +100,7 @@ final class JavaPropertiesWriter {
           break;
         default:
           nonWhitespace = true;
-          if (c >= 32 && c <= 126) {
+          if (c >= 32 && c != 127 &&  encoder.canEncode(Character.toString(c))) {
             sb.appendCodePoint(c);
           }
           else {

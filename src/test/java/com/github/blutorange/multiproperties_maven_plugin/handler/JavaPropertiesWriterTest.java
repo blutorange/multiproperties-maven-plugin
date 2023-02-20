@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Test;
 
@@ -23,12 +25,13 @@ public class JavaPropertiesWriterTest {
     assertWritesKeyValuePair("key=\\u1f4ab", "key", "\u1f4ab");
     assertWritesKeyValuePair("key=\\  foobar  ", "key", "  foobar  ");
     assertWritesKeyValuePair("key=\\u0015", "key", "\u0015");
+    assertWritesKeyValuePair("key=こんにちは", "key", "こんにちは", StandardCharsets.UTF_8);
   }
 
   @Test
   public void testWriteKeyValuePairAsComment() throws IOException {
     assertWritesKeyValuePairAsComment("#delimiterCharacters\\:\\=\\ =foobar", "delimiterCharacters:= ", "foobar");
-    assertWritesKeyValuePairAsComment("#key=Line\\rbreak\\n\\\r\n#\ttab\\tfeed\\f", "key", "Line\rbreak\ntab\tfeed\f");
+    assertWritesKeyValuePairAsComment("#key=Line\\rbreak\\n\\\n#\ttab\\tfeed\\f", "key", "Line\rbreak\ntab\tfeed\f");
     assertWritesKeyValuePairAsComment("#key=c:\\\\wiki\\\\templates", "key", "c:\\wiki\\templates");
     assertWritesKeyValuePairAsComment("#key=\\u3053\\u3093\\u306b\\u3061\\u306f", "key", "こんにちは");
     assertWritesKeyValuePairAsComment("#key=\\u1f4ab", "key", "\u1f4ab");
@@ -42,8 +45,12 @@ public class JavaPropertiesWriterTest {
   }
 
   private void assertWritesKeyValuePair(String expected, String key, String value) throws IOException {
+    assertWritesKeyValuePair(expected, key, value, StandardCharsets.ISO_8859_1);
+  }
+
+  private void assertWritesKeyValuePair(String expected, String key, String value, Charset charset) throws IOException {
     var writer = new StringWriter();
-    var props = new JavaPropertiesWriter(writer);
+    var props = new JavaPropertiesWriter(writer, charset);
     props.writeKeyValuePair(key, value);
     writer.flush();
     assertEquals(expected + "\r\n", writer.toString());
@@ -51,7 +58,7 @@ public class JavaPropertiesWriterTest {
 
   private void assertWritesKeyValuePairAsComment(String expected, String key, String value) throws IOException {
     var writer = new StringWriter();
-    var props = new JavaPropertiesWriter(writer);
+    var props = new JavaPropertiesWriter(writer, StandardCharsets.ISO_8859_1);
     props.writeKeyValuePairAsComment(key, value);
     writer.flush();
     assertEquals(expected + "\r\n", writer.toString());
@@ -59,7 +66,7 @@ public class JavaPropertiesWriterTest {
 
   private void assertWritesComment(String expected, String comment) throws IOException {
     var writer = new StringWriter();
-    var props = new JavaPropertiesWriter(writer);
+    var props = new JavaPropertiesWriter(writer, StandardCharsets.ISO_8859_1);
     props.writeComment(comment, true);
     writer.flush();
     var actual = writer.toString();

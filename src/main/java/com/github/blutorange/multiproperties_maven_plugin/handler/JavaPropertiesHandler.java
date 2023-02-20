@@ -51,10 +51,15 @@ final class JavaPropertiesHandler implements IOutputHandler {
 
   private void writeItems(IOutputParams params, JavaPropertiesConfiguration configuration, Writer writer) throws IOException {
     final var columnKey = params.getColumnKey();
-    final var propertiesWriter = new JavaPropertiesWriter(writer);
+    final var propertiesWriter = new JavaPropertiesWriter(writer, configuration.getEncoding());
 
     if (configuration.isInsertFileDescriptionAsComment() && isNotEmpty(params.getFileDescription())) {
       propertiesWriter.writeComment(params.getFileDescription(), true);
+      propertiesWriter.writeLineBreak();
+    }
+    
+    if (configuration.isInsertColumnDescriptionAsComment()) {
+      // Weird, but that's how the Eclipse add-on behaves currently...
       propertiesWriter.writeLineBreak();
     }
 

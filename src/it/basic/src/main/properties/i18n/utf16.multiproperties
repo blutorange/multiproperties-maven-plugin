@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MultiProperties xmlns="hu.skzs.multiproperties">
+    <Version>1.2</Version>
+    <Name>Localized strings</Name>
+    <Description>昨日すき焼きを食べましたfileDesc1
+  昨日すき焼きを食べましたfileDesc2
+    昨日すき焼きを食べましたfileDesc3</Description>
+    <Handler>Java Properties Handler</Handler>
+    <Columns>
+        <Key>
+            <Width>200</Width>
+        </Key>
+        <Column>
+            <Name>de</Name>
+            <Description></Description>
+            <Width>150</Width>
+            <HandlerConfiguration>/maven-properties-plugin-basic/src/main/properties/i18n/utf16_de.properties|true|true|true|false|UTF-16</HandlerConfiguration>
+        </Column>
+        <Column>
+            <Name>en</Name>
+            <Description></Description>
+            <Width>597</Width>
+            <HandlerConfiguration>/maven-properties-plugin-basic/src/main/properties/i18n/utf16_en.properties|true|true|true|false|UTF-16</HandlerConfiguration>
+        </Column>
+    </Columns>
+    <Records>
+        <Comment>
+            <Value>昨日すき焼きを食べました comment</Value>
+        </Comment>
+        <Property>
+            <Name>single-line</Name>
+            <Description>昨日すき焼きを食べましたdesc</Description>
+            <Disabled>false</Disabled>
+            <MultiLine>false</MultiLine>
+            <DefaultValue>昨日すき焼きを食べましたdefault</DefaultValue>
+            <Value disabled="false">昨日すき焼きを食べましたde</Value>
+            <Value disabled="false">昨日すき焼きを食べましたen</Value>
+        </Property>
+        <Property>
+            <Name>multi-line</Name>
+            <Description>昨日すき焼きを食べましたdesc</Description>
+            <Disabled>false</Disabled>
+            <MultiLine>true</MultiLine>
+            <DefaultValue>昨日すき焼きを食べましたdefault1
+昨日すき焼きを食べましたdefault2</DefaultValue>
+            <Value disabled="false">昨日すき焼きを食べましたde1
+昨日すき焼きを食べましたde2</Value>
+            <Value disabled="false">昨日すき焼きを食べましたen1
+昨日すき焼きを食べましたen2</Value>
+        </Property>
+    </Records>
+</MultiProperties>
