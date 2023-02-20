@@ -88,9 +88,9 @@ public class GenerateMojo extends AbstractMojo {
   /**
    * Whether to skip input files. Possible options are
    * <ul>
-   * <li>UNCHANGED: When this plugin is executed as part of an m2e (Maven2Eclipse) incremental build , skip all files
+   * <li>UNCHANGED - When this plugin is executed as part of an m2e (Maven2Eclipse) incremental build , skip all files
    * that did not have changes since the last build.</li>
-   * <li>NEVER: Do not skip any input files.</li>
+   * <li>NEVER - Do not skip any input files.</li>
    * </ul>
    */
   @Parameter(property = "skipInputMode", defaultValue = "UNCHANGED", required = true)
