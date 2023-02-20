@@ -21,7 +21,6 @@
 						<goals>
 							<goal>generate</goal>
 						</goals>
-						<configuration></configuration>
 					</execution>
 					<execution>
 						<id>custom-generate</id>
@@ -33,14 +32,20 @@
 							<baseDir>${project.basedir}/custom</baseDir>
 							<baseSourceDir>input</baseSourceDir>
 							<baseTargetDir>output</baseTargetDir>
-							<multipropertiesFiles>
-								<includes>
-									<include>**/*.txt</include>
-								</includes>
-								<excludes>
-									<exclude>*thing*</exclude>
-								</excludes>
-							</multipropertiesFiles>
+							<fileSets>
+								<fileSet>
+									<directory>subdir1</directory>
+									<includes>
+										<include>subdir2/**/*</include>
+									</includes>
+									<excludes>
+										<exclude>**/*thing*</exclude>
+									</excludes>
+									<extensions>
+										<extension>txt</extension>
+									</extensions>
+								</fileSet>
+							</fileSets>
 						</configuration>
 					</execution>
 				</executions>

@@ -24,5 +24,5 @@ Other than that, it should generate the same output as the Eclipse addon, with a
 * Characters not representable in US-ASCII are escaped when US-ASCII is selected as the encoding. The Eclipse add-on fails
   to escape such characters for US-ASCII, resulting in question marks `?` being written to the properties file.
 
-Note that the settings `Insert description of column in the beginning as comment` currently does not do what it advertises, it only add a line break at the beginning of the file. This plugin intentionally reproduces this behavior as I would not consider that to be
+Note that the setting `Insert description of column in the beginning as comment` currently does not do what it advertises, it only add a line break at the beginning of the file. This plugin intentionally reproduces this behavior as I would not consider that to be
 a major bug and it does not result in broken properties files or missing data.

@@ -2,7 +2,10 @@ package com.github.blutorange.multiproperties_maven_plugin.common;
 
 import static com.github.blutorange.multiproperties_maven_plugin.common.CollectionHelper.isCollectionEmpty;
 import static com.github.blutorange.multiproperties_maven_plugin.common.StringHelper.isEmpty;
+import static com.github.blutorange.multiproperties_maven_plugin.common.StringHelper.isNotEmpty;
+import static com.github.blutorange.multiproperties_maven_plugin.common.StringHelper.removeStart;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,13 +14,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
+import java.util.Locale;
+import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.IntStream;
 
 import org.codehaus.plexus.util.DirectoryScanner;
 
@@ -41,44 +42,43 @@ public final class FileHelper {
   /**
    * Processes the includes and excludes relative to the given base directory, and returns all included files.
    * @param baseDir Base directory of the includes and excludes.
-   * @param files File patterns to include and exclude.
+   * @param fileSets File patterns to include and exclude.
    * @return A list of all files matching the given includes and excludes.
    */
-  public static List<Path> getIncludedFiles(Path baseDir, FileSet files) {
-    return getIncludedFiles(baseDir, files.getIncludes(), files.getExcludes());
+  public static List<Path> getIncludedFiles(Path baseDir, List<FileSet> fileSets) {
+    final var result = new HashSet<Path>();
+    for (final var fileSet : fileSets) {
+      final var resolved = getIncludedFiles(baseDir, fileSet);
+      result.addAll(resolved);
+    }
+    return new ArrayList<>(result);
   }
 
   /**
    * Processes the includes and excludes relative to the given base directory, and returns all included files.
-   * @param baseDir Base directory of the includes and excludes.
-   * @param includes List of specified includes
-   * @param excludes List of specified excludes
+   * @param baseDir Base directory of the includes and excludes. contain a leading dot.
+   * @param fileSet File to to resolve.
    * @return A list of all files matching the given includes and excludes.
    */
-  public static List<Path> getIncludedFiles(Path baseDir, List<String> includes, List<String> excludes) {
-    if (isCollectionEmpty(includes)) {
-      return new ArrayList<>();
-    }
-    final var excludesArray = excludes.toArray(String[]::new);
+  public static List<Path> getIncludedFiles(Path baseDir, FileSet fileSet) {
+    final var finalBaseDir = isNotEmpty(fileSet.getDirectory()) //
+        ? baseDir.resolve(fileSet.getDirectory()) //
+        : baseDir;
 
-    return IntStream.range(0, includes.size()) //
-        .mapToObj(i -> Map.entry(i, includes.get(i))) //
-        .flatMap(include -> {
-          final var scanner = new DirectoryScanner();
-          scanner.setIncludes(new String[] { include.getValue() });
-          scanner.setExcludes(excludesArray);
-          scanner.addDefaultExcludes();
-          scanner.setBasedir(baseDir.toFile());
-          scanner.scan();
-          return Arrays.stream(scanner.getIncludedFiles()) //
-              .map(includedFilename -> {
-                final var includedFile = baseDir.resolve(includedFilename).toAbsolutePath();
-                return Map.entry(include.getKey(), includedFile);
-              });
-        }) //
-        .sorted(Comparator.comparing(Map.Entry::getKey)) //
-        .map(Map.Entry::getValue) //
-        .filter(distinctByKey(p -> p.toString())) //
+    final var scanner = new DirectoryScanner();
+    scanner.setIncludes(isCollectionEmpty(fileSet.getIncludes()) ? null : fileSet.getIncludes().toArray(String[]::new));
+    scanner.setExcludes(fileSet.getExcludes().toArray(String[]::new));
+    if (!fileSet.isSkipDefaultExcludes()) {
+      scanner.addDefaultExcludes();
+    }
+    scanner.setCaseSensitive(!fileSet.isCaseInsensitive());
+    scanner.setBasedir(finalBaseDir.toFile());
+    scanner.scan();
+
+    return Arrays.stream(scanner.getIncludedFiles()) //
+        .filter(matchesExtension(fileSet.getExtensions(), fileSet.isCaseInsensitive())) //
+        .map(file -> finalBaseDir.resolve(file)) //
+        .map(path -> path.toAbsolutePath()) //
         .collect(toList());
   }
 
@@ -122,8 +122,8 @@ public final class FileHelper {
    * @param target Target to resolve.
    * @return An absolute path, the result of resolving target against the given base directory.
    */
-  public static Path resolve(Path baseDir, String target) {
-    return resolve(baseDir, target != null ? Paths.get(target) : null);
+  public static Path resolve(Path baseDir, Path target) {
+    return target != null ? baseDir.resolve(target).toAbsolutePath() : baseDir;
   }
 
   /**
@@ -131,12 +131,30 @@ public final class FileHelper {
    * @param target Target to resolve.
    * @return An absolute path, the result of resolving target against the given base directory.
    */
-  public static Path resolve(Path baseDir, Path target) {
-    return target != null ? baseDir.resolve(target).toAbsolutePath() : baseDir;
+  public static Path resolve(Path baseDir, String target) {
+    return resolve(baseDir, target != null ? Paths.get(target) : null);
   }
 
-  private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
-    final var seen = new HashSet<>();
-    return item -> seen.add(keyExtractor.apply(item));
+  private static String getFileExtensionWithoutDot(String filename, boolean caseInsensitive) {
+    if (isEmpty(filename)) {
+      return "";
+    }
+    final var index = filename.lastIndexOf(".");
+    final var extension = index >= 0 ? filename.substring(index + 1) : "";
+    return caseInsensitive ? extension.toLowerCase(Locale.ROOT) : extension;
+  }
+
+  private static Predicate<? super String> matchesExtension(List<String> extensions, boolean caseInsensitive) {
+    final var extensionSet = extensions != null ? normalizeExtensions(extensions, caseInsensitive) : new HashSet<>();
+    return includedFilename -> {
+      final var extension = getFileExtensionWithoutDot(includedFilename, caseInsensitive);
+      return extensionSet.size() == 0 || extensionSet.contains(extension);
+    };
+  }
+
+  private static Set<String> normalizeExtensions(List<String> extensions, boolean caseInsensitive) {
+    return extensions.stream() //
+        .filter(ext -> isNotEmpty(ext)).map(ext -> removeStart(ext, ".")) //
+        .map(ext -> caseInsensitive ? ext.toLowerCase(Locale.ROOT) : ext).collect(toSet());
   }
 }

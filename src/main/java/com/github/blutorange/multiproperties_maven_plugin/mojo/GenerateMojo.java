@@ -1,12 +1,12 @@
 package com.github.blutorange.multiproperties_maven_plugin.mojo;
 
-import static com.github.blutorange.multiproperties_maven_plugin.common.CollectionHelper.areAllCollectionsEmpty;
 import static com.github.blutorange.multiproperties_maven_plugin.common.CollectionHelper.isCollectionEmpty;
 import static com.github.blutorange.multiproperties_maven_plugin.common.FileHelper.getIncludedFiles;
 import static com.github.blutorange.multiproperties_maven_plugin.common.FileHelper.resolve;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -34,7 +34,7 @@ public class GenerateMojo extends AbstractMojo {
    * Base directory against which relative source (input) file paths are resolved. When this is a relative path, it is
    * resolved against the <code>baseDir</code>. Defaults to the <code>src/main/resources</code> directory.
    */
-  @Parameter(property = "baseSourceDir", defaultValue = "src/main/resources")
+  @Parameter(property = "baseSourceDir")
   private String baseSourceDir;
 
   /**
@@ -51,13 +51,16 @@ public class GenerateMojo extends AbstractMojo {
 
   /**
    * Multiproperties files to process. If the path is relative, it is resolved against the given <code>baseDir</code>,
-   * i.e. the base directory of the current project by default. Defaults to including
-   * <code>**&frasl;*.multiproperties</code>.
+   * i.e. the base directory of the current project by default.
+   * <p>
+   * When both <code>baseSourceDir</code> and <code>multiproperties</code> are not given, defaults to all files with the
+   * extension <code>multiproperties</code> from all resource folders of the current Maven project. Otherwise, defaults
+   * to including <code>**&frasl;*.multiproperties</code>.
    * <p>
    * If you wish to specify different options for different multiproperties files, use multiple executions.
    */
-  @Parameter(property = "multipropertiesFiles")
-  private FileSet multipropertiesFiles;
+  @Parameter(property = "fileSets")
+  private List<FileSet> fileSets;
 
   @Parameter(defaultValue = "${project}", readonly = true)
   private MavenProject project;
@@ -89,14 +92,12 @@ public class GenerateMojo extends AbstractMojo {
     final var baseSourcePath = resolve(basePath, baseSourceDir);
     final var baseTargetPath = resolve(basePath, baseTargetDir);
 
-    if (getLog().isDebugEnabled()) {
-      getLog().debug(String.format("Resolved paths: base=<%s>, source=<%s>, target=<%s>", basePath, baseSourcePath, baseTargetPath));
-    }
+    logPaths(basePath, baseSourcePath, baseTargetPath);
 
-    final var inputFiles = getIncludedFiles(baseSourcePath, multipropertiesFiles);
+    final var inputFiles = getIncludedFiles(baseSourcePath, fileSets);
 
     if (isCollectionEmpty(inputFiles)) {
-      getLog().warn("Did not find any multiproperties files to process, skipping plugin.");
+      getLog().warn("Did not find any multiproperties files to process, skipping multiproperties plugin.");
       return;
     }
 
@@ -114,11 +115,22 @@ public class GenerateMojo extends AbstractMojo {
   }
 
   private void applyDefaults() {
-    if (multipropertiesFiles == null || areAllCollectionsEmpty(multipropertiesFiles.getIncludes(), multipropertiesFiles.getExcludes())) {
-      multipropertiesFiles = new FileSet();
-      multipropertiesFiles.setIncludes(new ArrayList<>());
-      multipropertiesFiles.getIncludes().add("**/*.multiproperties");
+    if (fileSets == null) {
+      fileSets = new ArrayList<>();
     }
+    if (fileSets.isEmpty()) {
+      if (baseSourceDir == null && project != null && project.getBuild() != null && project.getBuild().getResources() != null) {
+        fileSets.addAll(newFileSetAllMultipropertiesFromProjectResources(project));
+      }
+      else {
+        fileSets.add(newFileSetIncludeAllMultiproperties());
+      }
+    }
+
+    if (baseSourceDir == null) {
+      baseDir = "";
+    }
+
     if (baseTargetDir == null) {
       var parent = project;
       while (parent.getParent() != null) {
@@ -135,5 +147,36 @@ public class GenerateMojo extends AbstractMojo {
     builder.withTargetDir(baseTargetDir);
     builder.withRemoveFirstPathSegment(removeFirstPathSegment);
     return builder.build();
+  }
+
+  private void logPaths(Path basePath, Path baseSourcePath, Path baseTargetPath) {
+    if (getLog().isDebugEnabled()) {
+      getLog().debug(String.format("Resolved base path = <%s>", basePath));
+      getLog().debug(String.format("Resolved base source path = <%s>", baseSourcePath));
+      getLog().debug(String.format("Resolved base target path = <%s>", baseTargetPath));
+      for (final var fileSet : fileSets) {
+        getLog().debug(String.format("Using file set <%s>", fileSet));
+      }
+    }
+  }
+
+  private static List<FileSet> newFileSetAllMultipropertiesFromProjectResources(MavenProject project) {
+    final var fileSets = new ArrayList<FileSet>();
+    for (final var resource : project.getBuild().getResources()) {
+      final var fileSet = new FileSet();
+      fileSet.setDirectory(resource.getDirectory());
+      fileSet.setIncludes(resource.getIncludes());
+      fileSet.setExcludes(resource.getExcludes());
+      fileSet.setExtensions(List.of(".multiproperties"));
+      fileSets.add(fileSet);
+    }
+    return fileSets;
+  }
+
+  private static FileSet newFileSetIncludeAllMultiproperties() {
+    final var fileSet = new FileSet();
+    fileSet.setIncludes(new ArrayList<>());
+    fileSet.getIncludes().add("**/*.multiproperties");
+    return fileSet;
   }
 }
