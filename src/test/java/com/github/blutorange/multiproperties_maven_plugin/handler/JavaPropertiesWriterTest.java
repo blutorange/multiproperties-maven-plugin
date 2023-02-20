@@ -15,6 +15,15 @@ import org.junit.jupiter.api.Test;
 @SuppressWarnings("javadoc")
 public class JavaPropertiesWriterTest {
   @Test
+  public void testWriteLineBreak() throws IOException {
+    var writer = new StringWriter();
+    var props = new JavaPropertiesWriter(writer, StandardCharsets.UTF_8);
+    props.writeLineBreak();
+    writer.flush();
+    assertEquals("\r\n", writer.toString());
+  }
+
+  @Test
   public void testWriteKeyValuePair() throws IOException {
     assertWritesKeyValuePair("key=", "key", null);
     assertWritesKeyValuePair("delimiterCharacters\\:\\=\\ =foobar", "delimiterCharacters:= ", "foobar");
@@ -27,7 +36,11 @@ public class JavaPropertiesWriterTest {
     assertWritesKeyValuePair("key=\\u0015", "key", "\u0015");
     assertWritesKeyValuePair("key=こんにちは", "key", "こんにちは", StandardCharsets.UTF_8);
     assertWritesKeyValuePair("key=\\uD83D\\uDCAB", "key", "💫", StandardCharsets.ISO_8859_1);
+    assertWritesKeyValuePair("key=\\uD83D\\uDCAB", "key", "💫", StandardCharsets.US_ASCII);
     assertWritesKeyValuePair("key=💫", "key", "💫", StandardCharsets.UTF_8);
+    assertWritesKeyValuePair("key=💫", "key", "💫", StandardCharsets.UTF_16);
+    assertWritesKeyValuePair("key=💫", "key", "💫", StandardCharsets.UTF_16BE);
+    assertWritesKeyValuePair("key=💫", "key", "💫", StandardCharsets.UTF_16LE);
     assertWritesKeyValuePair("key=\\:\\!\\#\\=", "key", ":!#=", StandardCharsets.ISO_8859_1);
     assertWritesKeyValuePair("key=:!#=", "key", ":!#=", StandardCharsets.UTF_8);
     assertWritesKeyValuePair("key=[\\\\]", "key", "[\\]", StandardCharsets.ISO_8859_1);
@@ -42,6 +55,8 @@ public class JavaPropertiesWriterTest {
     assertWritesKeyValuePairAsComment("#key=\\u3053\\u3093\\u306B\\u3061\\u306F", "key", "こんにちは");
     assertWritesKeyValuePairAsComment("#key=\\u0001\\uF4AB", "key", "\u0001\uf4ab");
     assertWritesKeyValuePairAsComment("#key=\\  foobar  ", "key", "  foobar  ");
+    assertWritesKeyValuePairAsComment("#key=foo\\n\\\n#\tbar", "key", "foo\nbar");
+    assertWritesKeyValuePairAsComment("#key=foo\\r\\n\\\n#\tbar", "key", "foo\r\nbar");
   }
 
   @Test

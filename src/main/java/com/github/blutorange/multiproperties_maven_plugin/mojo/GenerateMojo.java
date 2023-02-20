@@ -33,9 +33,9 @@ public class GenerateMojo extends AbstractMojo {
 
   /**
    * Base directory against which relative source (input) file paths are resolved. When this is a relative path, it is
-   * resolved against the <code>baseDir</code>. Defaults to the <code>src/main/properties</code> directory.
+   * resolved against the <code>baseDir</code>. Defaults to the <code>src/main/resources</code> directory.
    */
-  @Parameter(property = "baseSourceDir", defaultValue = "src/main/properties")
+  @Parameter(property = "baseSourceDir", defaultValue = "src/main/resources")
   private File baseSourceDir;
 
   /**
@@ -52,8 +52,8 @@ public class GenerateMojo extends AbstractMojo {
 
   /**
    * Multiproperties files to process. If the path is relative, it is resolved against the given <code>baseDir</code>,
-   * i.e. the base directory of the current project by default. By default, all multiproperties files in
-   * <code>baseSourceDir</code> project resources directory are processed.
+   * i.e. the base directory of the current project by default. Defaults to including
+   * <code>**&frasl;*.multiproperties</code>.
    * <p>
    * If you wish to specify different options for different multiproperties files, use multiple executions.
    */

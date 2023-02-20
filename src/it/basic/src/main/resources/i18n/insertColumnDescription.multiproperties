@@ -6,8 +6,7 @@
 world
 line3
 
-line4
-昨日すき焼きを食べました</Description>
+line4</Description>
     <Handler>Java Properties Handler</Handler>
     <Columns>
         <Key>
@@ -17,13 +16,13 @@ line4
             <Name>de</Name>
             <Description></Description>
             <Width>150</Width>
-            <HandlerConfiguration>/maven-properties-plugin-basic/src/main/properties/i18n/insertFileDescription_de.properties|true|false|false|false|ISO-8859-1</HandlerConfiguration>
+            <HandlerConfiguration>/maven-properties-plugin-basic/src/main/resources/i18n/insertColumnDescription_de.properties|false|true|false|false|ISO-8859-1</HandlerConfiguration>
         </Column>
         <Column>
             <Name>en</Name>
             <Description></Description>
             <Width>597</Width>
-            <HandlerConfiguration>/maven-properties-plugin-basic/src/main/properties/i18n/insertFileDescription_en.properties|true|false|false|false|ISO-8859-1</HandlerConfiguration>
+            <HandlerConfiguration>/maven-properties-plugin-basic/src/main/resources/i18n/insertColumnDescription_en.properties|false|true|false|false|ISO-8859-1</HandlerConfiguration>
         </Column>
     </Columns>
     <Records>
@@ -32,7 +31,8 @@ line4
         </Comment>
         <Property>
             <Name>all-disabled</Name>
-            <Description></Description>
+            <Description>111
+222</Description>
             <Disabled>false</Disabled>
             <MultiLine>false</MultiLine>
             <Value disabled="true"></Value>
@@ -40,6 +40,7 @@ line4
         </Property>
         <Property>
             <Name>all-disabled-with-default</Name>
+            <Description>333</Description>
             <Disabled>false</Disabled>
             <MultiLine>false</MultiLine>
             <DefaultValue>all-disabled-with-default-default</DefaultValue>
@@ -48,7 +49,7 @@ line4
         </Property>
         <Property>
             <Name>de-only</Name>
-            <Description></Description>
+            <Description>444</Description>
             <Disabled>false</Disabled>
             <MultiLine>false</MultiLine>
             <Value disabled="false">de-only-de</Value>
@@ -56,6 +57,7 @@ line4
         </Property>
         <Property>
             <Name>de-only-with-default</Name>
+            <Description>555</Description>
             <Disabled>false</Disabled>
             <MultiLine>false</MultiLine>
             <DefaultValue>de-only-with-default-default</DefaultValue>
@@ -64,6 +66,7 @@ line4
         </Property>
         <Property>
             <Name>disabled</Name>
+            <Description>666</Description>
             <Disabled>true</Disabled>
             <MultiLine>false</MultiLine>
             <Value disabled="false">disabled-de</Value>
@@ -71,6 +74,7 @@ line4
         </Property>
         <Property>
             <Name>disabled-wth-default</Name>
+            <Description>777</Description>
             <Disabled>true</Disabled>
             <MultiLine>false</MultiLine>
             <DefaultValue>disabled-wth-default-default</DefaultValue>
@@ -79,6 +83,7 @@ line4
         </Property>
         <Property>
             <Name>normal</Name>
+            <Description>888</Description>
             <Disabled>false</Disabled>
             <MultiLine>false</MultiLine>
             <Value disabled="false">normal-de</Value>
@@ -86,6 +91,7 @@ line4
         </Property>
         <Property>
             <Name>normal-with-default</Name>
+            <Description>999</Description>
             <Disabled>false</Disabled>
             <MultiLine>false</MultiLine>
             <DefaultValue>normal-with-default-default</DefaultValue>
@@ -94,6 +100,7 @@ line4
         </Property>
         <Property>
             <Name>empty</Name>
+            <Description>10_10_10</Description>
             <Disabled>false</Disabled>
             <MultiLine>false</MultiLine>
             <Value disabled="false"></Value>
@@ -106,6 +113,7 @@ line4
         </Comment>
         <Property>
             <Name>multiline</Name>
+            <Description>11_11_11</Description>
             <Disabled>false</Disabled>
             <MultiLine>true</MultiLine>
             <Value disabled="false">multiline-1-de
@@ -115,6 +123,7 @@ line4
         </Property>
         <Property>
             <Name>multiline-de-only-with-default</Name>
+            <Description>12_12_12</Description>
             <Disabled>false</Disabled>
             <MultiLine>true</MultiLine>
             <DefaultValue>multiline-de-only-with-default-1-default
@@ -125,6 +134,7 @@ line4
         </Property>
         <Property>
             <Name>multiline-disabled</Name>
+            <Description>13_13_13</Description>
             <Disabled>true</Disabled>
             <MultiLine>true</MultiLine>
             <Value disabled="false">multiline-disabled-1-de

@@ -12,14 +12,17 @@ Instead generate the properties files from the multiproperties file during the M
 
 Caveats:
 
-* The `Text File Handler` is not supported currently. The Eclipse addon seems to be broken currently and does not generate the text files (or rather, the generated files only contain `nullnullnull...`). If anybody needs this and knows the format of these generated text files, open an issue and let me know.
+* The `Text File Handler` is not supported as of now. The Eclipse add-on seems to be broken currently and does not generate the text files (or rather, the generated files only contain `nullnullnull...`). If anybody needs this and knows the format of these generated text files, open an issue and let me know.
 
 Other than that, it should generate the same output as the Eclipse addon, with a few intentional exceptions:
 
 * `Write disabled properties as comment` is turned on and a multiline property is disabled, the Eclipse addon
   fails to comment every line other than the first line of the multiline property, which is a bug. This plugin adds
   the `#` before each line.
-* It properly escapes a backslash `\` in the value of a property as two backslashes `\\`
+* Backslashes `\` in the value of a property are properly escaped as two backslashes `\\`. The Eclipse add-on fails to
+  do so when the file encoding is UTF8 or UTF16.
+* Characters not representable in US-ASCII are escaped when US-ASCII is selected as the encoding. The Eclipse add-on fails
+  to escape such characters for US-ASCII, resulting in question marks `?` being written to the properties file.
 
-Note that the settings `Insert description of column in the beginning as comment` currently does not do what it advertises, it only
-add a line break at the beginning of the file. This plugin intentionally reproduces this behavior.
+Note that the settings `Insert description of column in the beginning as comment` currently does not do what it advertises, it only add a line break at the beginning of the file. This plugin intentionally reproduces this behavior as I would not consider that to be
+a major bug and it does not result in broken properties files or missing data.

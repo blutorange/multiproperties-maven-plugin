@@ -16,13 +16,13 @@ line4</Description>
             <Name>de</Name>
             <Description></Description>
             <Width>150</Width>
-            <HandlerConfiguration>/maven-properties-plugin-basic/src/main/properties/i18n/disableDefaultValues_de.properties|false|false|false|true|ISO-8859-1</HandlerConfiguration>
+            <HandlerConfiguration>/maven-properties-plugin-basic/src/main/resources/i18n/disableDefaultValues_de.properties|false|false|false|true|ISO-8859-1</HandlerConfiguration>
         </Column>
         <Column>
             <Name>en</Name>
             <Description></Description>
             <Width>597</Width>
-            <HandlerConfiguration>/maven-properties-plugin-basic/src/main/properties/i18n/disableDefaultValues_en.properties|false|false|false|true|ISO-8859-1</HandlerConfiguration>
+            <HandlerConfiguration>/maven-properties-plugin-basic/src/main/resources/i18n/disableDefaultValues_en.properties|false|false|false|true|ISO-8859-1</HandlerConfiguration>
         </Column>
     </Columns>
     <Records>
