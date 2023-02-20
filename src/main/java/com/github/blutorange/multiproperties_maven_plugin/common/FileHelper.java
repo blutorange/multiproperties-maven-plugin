@@ -21,8 +21,11 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import org.codehaus.plexus.util.DirectoryScanner;
+import org.sonatype.plexus.build.incremental.BuildContext;
 
 import com.github.blutorange.multiproperties_maven_plugin.mojo.FileSet;
+import com.github.blutorange.multiproperties_maven_plugin.mojo.SkipInputMode;
+import com.github.blutorange.multiproperties_maven_plugin.mojo.SkipOutputMode;
 
 /**
  * Utility methods for working with paths and files.
@@ -133,6 +136,51 @@ public final class FileHelper {
    */
   public static Path resolve(Path baseDir, String target) {
     return resolve(baseDir, target != null ? Paths.get(target) : null);
+  }
+
+  /**
+   * @param sourceFile Source file takes as input.
+   * @param targetFile Target file generated from the source file.
+   * @param skipOutputMode Skip mode.
+   * @return <code>true</code> if the target file should be skipped and not be regenerated from the source file.
+   * @throws IOException When the files could not be accessed.
+   */
+  public static boolean shouldSkipOutput(Path sourceFile, Path targetFile, SkipOutputMode skipOutputMode) throws IOException {
+    final boolean ouptutFilesExist = Files.exists(targetFile);
+    switch (ObjectHelper.defaultIfNull(skipOutputMode, SkipOutputMode.NEWER)) {
+      case NEVER:
+        return false;
+      case NEWER:
+        if (ouptutFilesExist) {
+          final var targetModified = Files.getLastModifiedTime(targetFile);
+          final var sourceModified = Files.getLastModifiedTime(sourceFile);
+          return targetModified.compareTo(sourceModified) > 0;
+        }
+        else {
+          return false;
+        }
+      case EXISTS:
+        return ouptutFilesExist;
+      default:
+        throw new RuntimeException("Unhandled enum: " + skipOutputMode);
+    }
+  }
+
+  /**
+   * @param file Input file to check.
+   * @param buildContext Current build context.
+   * @param skipInputMode Skip mode.
+   * @return <code>true</code> if the input file should be skipped under the given skip mode.
+   */
+  public static boolean shouldSkipInput(Path file, BuildContext buildContext, SkipInputMode skipInputMode) {
+    switch (skipInputMode) {
+      case NEVER:
+        return false;
+      case UNCHANGED:
+        return buildContext != null && buildContext.isIncremental() && buildContext.hasDelta(file.toFile());
+      default:
+        throw new RuntimeException("Unhandled enum: " + skipInputMode);
+    }
   }
 
   private static String getFileExtensionWithoutDot(String filename, boolean caseInsensitive) {

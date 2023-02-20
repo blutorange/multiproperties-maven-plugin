@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import org.apache.maven.plugin.logging.Log;
 
 import com.github.blutorange.multiproperties_maven_plugin.handler.OutputHandlerFactory;
+import com.github.blutorange.multiproperties_maven_plugin.mojo.SkipOutputMode;
 import com.github.blutorange.multiproperties_maven_plugin.parser.MultipropertiesParser;
 
 /**
@@ -13,12 +14,14 @@ import com.github.blutorange.multiproperties_maven_plugin.parser.Multiproperties
 public final class MultipropertiesGenerator {
   private final Log logger;
   private final boolean removeFirstPathSegment;
+  private final SkipOutputMode skipMode;
   @SuppressWarnings("unused")
   private final Path sourceDir;
   private final Path targetDir;
 
   private MultipropertiesGenerator(Builder builder) {
     this.logger = builder.logger;
+    this.skipMode = builder.skipMode;
     this.sourceDir = builder.sourceDir;
     this.targetDir = builder.targetDir;
     this.removeFirstPathSegment = builder.removeFirstPathSegment;
@@ -38,9 +41,21 @@ public final class MultipropertiesGenerator {
     for (final var handlerConfiguration : handlerConfigurations) {
       final var columnKey = handlerConfiguration.getColumnKey();
       logger.info(String.format("Processing column <%s>", columnKey));
-      final var params = new OutputParams(logger, targetDir, removeFirstPathSegment, parsed, handlerConfiguration);
+      final var params = outputParamsBuilder() //
+          .withInputFile(file) //
+          .withMultiproperties(parsed) //
+          .withHandlerConfiguration(handlerConfiguration) //
+          .build();
       handler.handleProperties(params);
     }
+  }
+
+  private OutputParams.Builder outputParamsBuilder() {
+    return OutputParams.builder() //
+        .withLogger(logger) //
+        .withBaseDir(targetDir) //
+        .withSkipMode(skipMode) //
+        .withRemoveFirstPathSegment(removeFirstPathSegment);
   }
 
   /**
@@ -56,6 +71,7 @@ public final class MultipropertiesGenerator {
   public static final class Builder {
     private Log logger;
     private boolean removeFirstPathSegment;
+    private SkipOutputMode skipMode;
     private Path sourceDir;
     private Path targetDir;
 
@@ -82,6 +98,15 @@ public final class MultipropertiesGenerator {
      */
     public void withRemoveFirstPathSegment(boolean removeFirstPathSegment) {
       this.removeFirstPathSegment = removeFirstPathSegment;
+    }
+
+    /**
+     * @param skipMode Whether to skip recreating an output file.
+     * @return This builder instance for chaining method calls.
+     */
+    public Builder withSkipMode(SkipOutputMode skipMode) {
+      this.skipMode = skipMode;
+      return this;
     }
 
     /**

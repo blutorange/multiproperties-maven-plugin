@@ -3,6 +3,7 @@ package com.github.blutorange.multiproperties_maven_plugin.mojo;
 import static com.github.blutorange.multiproperties_maven_plugin.common.CollectionHelper.isCollectionEmpty;
 import static com.github.blutorange.multiproperties_maven_plugin.common.FileHelper.getIncludedFiles;
 import static com.github.blutorange.multiproperties_maven_plugin.common.FileHelper.resolve;
+import static com.github.blutorange.multiproperties_maven_plugin.common.FileHelper.shouldSkipInput;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -10,12 +11,14 @@ import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.sonatype.plexus.build.incremental.BuildContext;
 
-import com.github.blutorange.multiproperties_maven_plugin.common.MultipropertiesGenerator;;
+import com.github.blutorange.multiproperties_maven_plugin.common.MultipropertiesGenerator;
 
 /**
  * Goal which generates the derived files from a multiproperties file.
@@ -49,6 +52,9 @@ public class GenerateMojo extends AbstractMojo {
   @Parameter(property = "baseTargetDir")
   private String baseTargetDir;
 
+  @Component
+  private BuildContext buildContext;
+
   /**
    * Multiproperties files to process. If the path is relative, it is resolved against the given <code>baseDir</code>,
    * i.e. the base directory of the current project by default.
@@ -79,12 +85,60 @@ public class GenerateMojo extends AbstractMojo {
   @Parameter(property = "skip", defaultValue = "${skip.multiproperties}")
   private boolean skip;
 
+  /**
+   * Whether to skip input files. Possible options are
+   * <ul>
+   * <li>UNCHANGED: When this plugin is executed as part of an m2e (Maven2Eclipse) incremental build , skip all files
+   * that did not have changes since the last build.</li>
+   * <li>NEVER: Do not skip any input files.</li>
+   * </ul>
+   */
+  @Parameter(property = "skipInputMode", defaultValue = "UNCHANGED", required = true)
+  private SkipInputMode skipInputMode;
+
+  /**
+   * This options lets configure how this plugin checks whether it should skip recreating an existing output file.
+   * Available options are:
+   * <ul>
+   * <li>NEWER - Skip execution if the the target file exists already and all input files are older. Whether a file is
+   * older is judged according to their modification date.</li>
+   * <li>EXISTS - Skip execution if the target file exists already, irrespective of when thee files were last
+   * modified.</li>
+   * <li>NEVER - Never skip recreating an output file</li>
+   * </ul>
+   */
+  @Parameter(property = "skipOutputMode", defaultValue = "NEWER", required = true)
+  private SkipOutputMode skipOutputMode;
+
+  /**
+   * <p>
+   * When this plugin is executed as part of an m2e (Maven2Eclipse) incremental build and this option is set to
+   * <code>true</code>, skip the execution of this plugin.
+   * </p>
+   * <p>
+   * For the m2e integration, this plugin is configured by default to run on incremental builds. When having a project
+   * opened in Eclipse, this recreates the minified files every time a source file is changed.
+   * </p>
+   * <p>
+   * You can disable this behavior via the <code>org.eclipse.m2e/lifefycle-mapping plugin</code>. As this is rather
+   * verbose, this option offers a convenient way of disabling incremental builds. Please note that technically this
+   * plugin is still executed on every incremental build cycle, but exits immediately without doing any work.
+   * </p>
+   */
+  @Parameter(property = "skipRunOnIncremental", defaultValue = "false")
+  private boolean skipRunOnIncremental;
+
   @Override
   public void execute() throws MojoExecutionException {
     applyDefaults();
 
     if (skip) {
       getLog().info("Skipping multiproperties Maven plugin as <skip> option was set to <true>.");
+      return;
+    }
+
+    if (buildContext != null && buildContext.isIncremental() && skipRunOnIncremental) {
+      getLog().info("skipRunOnIncremental was to true, so skipping incremental build.");
       return;
     }
 
@@ -95,15 +149,16 @@ public class GenerateMojo extends AbstractMojo {
     logPaths(basePath, baseSourcePath, baseTargetPath);
 
     final var inputFiles = getIncludedFiles(baseSourcePath, fileSets);
+    final var changedFiles = filterChangedFiles(inputFiles);
 
-    if (isCollectionEmpty(inputFiles)) {
-      getLog().warn("Did not find any multiproperties files to process, skipping multiproperties plugin.");
+    if (isCollectionEmpty(changedFiles)) {
+      logEmptyFiles(inputFiles, changedFiles);
       return;
     }
 
     final var generator = createGenerator(baseSourcePath, baseTargetPath);
 
-    for (final var inputFile : inputFiles) {
+    for (final var inputFile : changedFiles) {
       getLog().info(String.format("Processing multiproperties files <%s>", inputFile));
       try {
         generator.process(inputFile);
@@ -146,7 +201,31 @@ public class GenerateMojo extends AbstractMojo {
     builder.withSourceDir(baseSourceDir);
     builder.withTargetDir(baseTargetDir);
     builder.withRemoveFirstPathSegment(removeFirstPathSegment);
+    builder.withSkipMode(skipOutputMode);
     return builder.build();
+  }
+
+  private List<Path> filterChangedFiles(List<Path> files) {
+    final var filtered = new ArrayList<Path>();
+    for (final var file : files) {
+      final var shouldSkip = shouldSkipInput(file, buildContext, skipInputMode);
+      if (shouldSkip) {
+        getLog().info(String.format("Skipping input <%s>: %s", file, skipInputMode.getReason()));
+      }
+      else {
+        filtered.add(file);
+      }
+    }
+    return filtered;
+  }
+
+  private void logEmptyFiles(List<Path> inputFiles, List<Path> changedFiles) {
+    if (isCollectionEmpty(changedFiles)) {
+      getLog().warn("Did not find any multiproperties files to process, skipping multiproperties plugin.");
+    }
+    else {
+      getLog().info(String.format("Found %d files, but none had any changes, skipping multiproperties plugin", inputFiles.size()));
+    }
   }
 
   private void logPaths(Path basePath, Path baseSourcePath, Path baseTargetPath) {

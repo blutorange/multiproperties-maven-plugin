@@ -79,6 +79,7 @@
 		<jaxb-impl.version>4.0.2</jaxb-impl.version>
 		<plexus-utils.version>3.5.0</plexus-utils.version>
 		<maven-plugin-annotations.version>3.7.1</maven-plugin-annotations.version>
+		<plexus-build-api.version>0.0.7</plexus-build-api.version>
 		<!-- Testing -->
 		<junit-jupiter.version>5.9.2</junit-jupiter.version>
 		<maven-plugin-testing-harness.version>3.3.0</maven-plugin-testing-harness.version>
@@ -109,7 +110,7 @@
 			<version>${maven-plugin-annotations.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- Compile -->
+		<!-- Compile / runtime -->
 		<dependency>
 			<groupId>org.codehaus.plexus</groupId>
 			<artifactId>plexus-utils</artifactId>
@@ -124,6 +125,12 @@
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-impl</artifactId>
 			<version>${jaxb-impl.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.sonatype.plexus</groupId>
+			<artifactId>plexus-build-api</artifactId>
+			<version>${plexus-build-api.version}</version>
 		</dependency>
 		<!--Test-->
 		<dependency>

@@ -2,6 +2,7 @@ package com.github.blutorange.multiproperties_maven_plugin.handler;
 
 import static com.github.blutorange.multiproperties_maven_plugin.common.FileHelper.createDirectoriesIfMissing;
 import static com.github.blutorange.multiproperties_maven_plugin.common.FileHelper.removeFirstPathSegmentFromString;
+import static com.github.blutorange.multiproperties_maven_plugin.common.FileHelper.shouldSkipOutput;
 import static com.github.blutorange.multiproperties_maven_plugin.common.StringHelper.isNotEmpty;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
@@ -32,8 +33,15 @@ final class JavaPropertiesHandler implements IOutputHandler {
     final var outputPath = resolveOutputPath(configuration.getOutputPath(), params.isRemoveFirstPathSegment());
     final var outputFile = params.getBaseDir().resolve(outputPath);
     final var encoding = configuration.getEncoding();
+
+    if (shouldSkipOutput(params.getInputFile(), outputFile, params.getSkipMode())) {
+      params.getLogger().info(String.format("Skipping ouptut <%s>: %s", outputFile, params.getSkipMode().getReason()));
+      return;
+    }
+
     createDirectoriesIfMissing(outputFile.getParent());
     params.getLogger().info(String.format("Writing file <%s> with encoding <%s>", outputFile, encoding));
+
     try (final var out = Files.newOutputStream(outputFile, CREATE, WRITE, TRUNCATE_EXISTING)) {
       try (final var writer = new OutputStreamWriter(out, encoding)) {
         action.perform(writer);

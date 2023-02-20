@@ -12,9 +12,7 @@ Maven plugin for generating derived files from a multiproperties file, see
 	<version>${multiproperties-maven-plugin.version}</version>
 	<executions>
 		<execution>
-			<goals>
-				<goal>generate</goal>
-			</goals>
+			<goals><goal>generate</goal></goals>
 		</execution>
 	</executions>
 </plugin>

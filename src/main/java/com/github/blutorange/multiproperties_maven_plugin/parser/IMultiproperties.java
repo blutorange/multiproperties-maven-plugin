@@ -10,7 +10,7 @@ public interface IMultiproperties {
    * @return The description of the multiproperties file.
    */
   String getFileDescription();
-
+  
   /**
    * Gets the name of the output handler which defines how derived files are generated.
    * @return The name of the output handler.
