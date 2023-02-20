@@ -12,13 +12,18 @@ import com.github.blutorange.multiproperties_maven_plugin.parser.Item;
 import com.github.blutorange.multiproperties_maven_plugin.parser.Property;
 
 /**
- * Parameters passed to each {@link IOutputHandler}.
+ * Parameters passed to each {@link HandlerImplementor}.
  */
-public interface IOutputParams {
+public interface HandlerImplementorContext {
   /**
    * @return Base directory against which relative file paths should be resolved.
    */
   Path getBaseDir();
+
+  /**
+   * @return The {@link HandlerImplementor#getName()} of the output handler as specified in the multiproperties file.
+   */
+  String getDefaultHandlerName();
 
   /**
    * @return Key of the column for which to write the output.

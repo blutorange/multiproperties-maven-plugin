@@ -1,26 +1,26 @@
 package com.github.blutorange.multiproperties_maven_plugin.handler;
 
 /**
- * Factory for obtaining {@link IOutputHandler} instances.
+ * Factory for obtaining {@link HandlerImplementor} instances for the default handlers supported by a multiproperties file.
  */
-public final class OutputHandlerFactory {
+final class DefaultHandlerImplementorFactory {
   /**
    * Finds the handler instance for a given handler name.
    * @param handlerName Name of the handler.
    * @return The handler instance.
    * @throws IllegalArgumentException When no handler exists with the given name.
    */
-  public static IOutputHandler forName(String handlerName) {
+  public static HandlerImplementor forName(String handlerName) {
     if (handlerName == null) {
       throw new IllegalArgumentException("Invalid handler name: <null>");
     }
     switch (handlerName) {
       case "Java Properties Handler":
-        return new JavaPropertiesHandler();
+        return new JavaPropertiesImplementor();
       case "Text File Handler":
-        return new TextFileHandler();
+        return new TextFileHandlerImplementor();
       case "":
-        return new NoneHandler();
+        return new NoneHandlerImplementor();
       default:
         throw new IllegalArgumentException("Invalid handler name: " + handlerName);
     }

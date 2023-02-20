@@ -18,7 +18,9 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
-import com.github.blutorange.multiproperties_maven_plugin.common.MultipropertiesGenerator;
+import com.github.blutorange.multiproperties_maven_plugin.generator.MultipropertiesGenerator;
+import com.github.blutorange.multiproperties_maven_plugin.handler.DefaultHandler;
+import com.github.blutorange.multiproperties_maven_plugin.handler.Handler;
 
 /**
  * Goal which generates the derived files from a multiproperties file.
@@ -84,6 +86,46 @@ public class GenerateMojo extends AbstractMojo {
    */
   @Parameter(property = "skip", defaultValue = "${skip.multiproperties}")
   private boolean skip;
+
+  /**
+   * Manage the output file handlers that control which files are generated from a multiproperties file.
+   * <p>
+   * By default, this is set to the
+   * <code>com.github.blutorange.multiproperties_maven_plugin.handler.DefaultHandler</code> handler which delegated to
+   * the handler as defined in the multiproperties file.
+   * <p>
+   * You need to specify the implementation class for each handler you wish to defined. For example, you could specify
+   * the default handler like this:
+   * 
+   * <pre>
+   * &lt;handlers&gt;
+   *   &lt;handler implementation=&quot;com.github.blutorange.multiproperties_maven_plugin.handler.DefaultHandler&quot;&gt;
+   *     &lt;!-- Add properties for the handler --&gt;
+   *   &lt;/handler&gt;
+   * &lt;handlers&gt;
+   * </pre>
+   * <p>
+   * Built-in handlers are:
+   * <dd>
+   * <dt>com.github.blutorange.multiproperties_maven_plugin.handler.DefaultHandler
+   * <dt>
+   * <dd>The default handler which delegates to the handler as defined in the multiproperties file.</dd>
+   * <dt>com.github.blutorange.multiproperties_maven_plugin.handler.JavaPropertiesHandler
+   * <dt>
+   * <dd>Writes to a Java properties file.</dd>
+   * <dt>com.github.blutorange.multiproperties_maven_plugin.handler.TextFileHandler
+   * <dt>
+   * <dd>Writes to a text file.</dd>
+   * <dt>com.github.blutorange.multiproperties_maven_plugin.handler.NoneHandler
+   * <dt>
+   * <dd>Does not write any output files.</dd></dd>
+   * <p>
+   * To use your own handler implementation, write an implementation of
+   * <code>com.github.blutorange.multiproperties_maven_plugin.handler.Handler</code> and include the class in the plugin
+   * execution via <code>&lt;depenencies&gt;</code>.
+   */
+  @Parameter(property = "handlerManagment")
+  private List<Handler> handlers;
 
   /**
    * Whether to skip input files. Possible options are
@@ -164,7 +206,7 @@ public class GenerateMojo extends AbstractMojo {
         generator.process(inputFile);
       }
       catch (final Exception e) {
-        throw new MojoExecutionException("Could not processing multiproperties file", e);
+        throw new MojoExecutionException("Could not process multiproperties file", e);
       }
     }
   }
@@ -180,6 +222,11 @@ public class GenerateMojo extends AbstractMojo {
       else {
         fileSets.add(newFileSetIncludeAllMultiproperties());
       }
+    }
+
+    if (handlers == null || handlers.isEmpty()) {
+      handlers = new ArrayList<>();
+      handlers.add(new DefaultHandler());
     }
 
     if (baseSourceDir == null) {
@@ -198,6 +245,7 @@ public class GenerateMojo extends AbstractMojo {
   private MultipropertiesGenerator createGenerator(Path baseSourceDir, Path baseTargetDir) {
     final var builder = MultipropertiesGenerator.builder();
     builder.withLogger(getLog());
+    builder.withHandlers(handlers);
     builder.withSourceDir(baseSourceDir);
     builder.withTargetDir(baseTargetDir);
     builder.withRemoveFirstPathSegment(removeFirstPathSegment);

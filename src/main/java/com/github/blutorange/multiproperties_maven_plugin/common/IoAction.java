@@ -1,4 +1,4 @@
-package com.github.blutorange.multiproperties_maven_plugin.handler;
+package com.github.blutorange.multiproperties_maven_plugin.common;
 
 import java.io.IOException;
 import java.util.function.Consumer;

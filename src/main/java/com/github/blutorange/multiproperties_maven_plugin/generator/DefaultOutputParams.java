@@ -1,4 +1,4 @@
-package com.github.blutorange.multiproperties_maven_plugin.common;
+package com.github.blutorange.multiproperties_maven_plugin.generator;
 
 import java.nio.file.Path;
 import java.util.Collections;
@@ -6,15 +6,16 @@ import java.util.List;
 
 import org.apache.maven.plugin.logging.Log;
 
-import com.github.blutorange.multiproperties_maven_plugin.handler.IOutputParams;
+import com.github.blutorange.multiproperties_maven_plugin.handler.HandlerImplementorContext;
 import com.github.blutorange.multiproperties_maven_plugin.mojo.SkipOutputMode;
 import com.github.blutorange.multiproperties_maven_plugin.parser.HandlerConfiguration;
 import com.github.blutorange.multiproperties_maven_plugin.parser.IMultiproperties;
 import com.github.blutorange.multiproperties_maven_plugin.parser.Item;
 
-final class OutputParams implements IOutputParams {
+final class DefaultOutputParams implements HandlerImplementorContext {
   private final Path baseDir;
   private final String columnKey;
+  private final String defaultHandlerName;
   private final String fileDescription;
   private final String handlerConfigurationString;
   private final Path inputFile;
@@ -23,9 +24,10 @@ final class OutputParams implements IOutputParams {
   private final boolean removeFirstPathSegment;
   private final SkipOutputMode skipMode;
 
-  private OutputParams(Builder builder) {
+  private DefaultOutputParams(Builder builder) {
     this.baseDir = builder.baseDir;
     this.columnKey = builder.columnKey;
+    this.defaultHandlerName = builder.defaultHandlerName;
     this.fileDescription = builder.fileDescription;
     this.handlerConfigurationString = builder.handlerConfigurationString;
     this.items = builder.items;
@@ -43,6 +45,11 @@ final class OutputParams implements IOutputParams {
   @Override
   public String getColumnKey() {
     return columnKey;
+  }
+
+  @Override
+  public String getDefaultHandlerName() {
+    return defaultHandlerName;
   }
 
   @Override
@@ -85,6 +92,7 @@ final class OutputParams implements IOutputParams {
   }
 
   public static final class Builder {
+    public String defaultHandlerName;
     private Path baseDir;
     private String columnKey;
     private String fileDescription;
@@ -97,8 +105,8 @@ final class OutputParams implements IOutputParams {
 
     private Builder() {}
 
-    public OutputParams build() {
-      return new OutputParams(this);
+    public DefaultOutputParams build() {
+      return new DefaultOutputParams(this);
     }
 
     public Builder withBaseDir(Path baseDir) {
@@ -111,14 +119,19 @@ final class OutputParams implements IOutputParams {
       return this;
     }
 
+    public Builder withDefaultHandlerName(String defaultHandlerName) {
+      this.defaultHandlerName = defaultHandlerName;
+      return this;
+    }
+
     public Builder withFileDescription(String fileDescription) {
       this.fileDescription = fileDescription;
       return this;
     }
 
     public Builder withHandlerConfiguration(HandlerConfiguration handlerConfiguration) {
-      this.columnKey = handlerConfiguration.getColumnKey();
-      this.handlerConfigurationString = handlerConfiguration.getConfigurationString();
+      withColumnKey(handlerConfiguration.getColumnKey());
+      withHandlerConfigurationString(handlerConfiguration.getConfigurationString());
       return this;
     }
 
@@ -143,8 +156,9 @@ final class OutputParams implements IOutputParams {
     }
 
     public Builder withMultiproperties(IMultiproperties parsed) {
-      this.fileDescription = parsed.getFileDescription();
-      this.items = parsed.getItems();
+      withDefaultHandlerName(parsed.getHandler());
+      withFileDescription(parsed.getFileDescription());
+      withItems(parsed.getItems());
       return this;
     }
 
