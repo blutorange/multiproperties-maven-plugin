@@ -1,31 +1,41 @@
-def assertResult = { name ->
-  File actualDe = new File( basedir, "src/main/resources/i18n/${name}_de.properties" );
-  File actualEn = new File( basedir, "src/main/resources/i18n/${name}_en.properties" );
+def assertResult = { expectedDir,actualDir,name ->
+  File actualDe = new File( basedir, "${actualDir}/${name}_de.properties" );
+  File actualEn = new File( basedir, "${actualDir}/${name}_en.properties" );
   
   assert actualDe.isFile();
   assert actualEn.isFile();
   
-  File expectedDe = new File( basedir, "expected/${name}_de.properties" );
-  File expectedEn = new File( basedir, "expected/${name}_en.properties" );
-  
-  System.out.println(name);
-  System.out.println(expectedDe);
-  System.out.println(actualDe);
+  File expectedDe = new File( basedir, "${expectedDir}/${name}_de.properties" );
+  File expectedEn = new File( basedir, "${expectedDir}/${name}_en.properties" );
   
   assert expectedDe.text.equals(actualDe.text);
   assert expectedEn.text.equals(actualEn.text); 
 }
 
-assertResult.call("localization");
-assertResult.call("insertFileDescription");
-assertResult.call("insertColumnDescription");
-assertResult.call("insertFileAndColumnDescription");
-assertResult.call("writeDisabledAsComments");
-assertResult.call("disableDefaultValues");
-assertResult.call("utf16");
-assertResult.call("specialCharsIso88591");
-assertResult.call("specialCharsUsAscii");
-assertResult.call("specialCharsUtf8");
-assertResult.call("specialCharsUtf16");
-assertResult.call("specialCharsUtf16Be");
-assertResult.call("specialCharsUtf16Le");
+def assertResultDefault = { name ->
+  assertResult("src/main/resources/i18n", "expected", name);
+}
+
+def assertResultCustom = { name ->
+  assertResult("custom/output/maven-properties-plugin-basic/custom/output", "custom/expected", name);
+}
+
+assertResultDefault.call("localization");
+assertResultDefault.call("insertFileDescription");
+assertResultDefault.call("insertColumnDescription");
+assertResultDefault.call("insertFileAndColumnDescription");
+assertResultDefault.call("writeDisabledAsComments");
+assertResultDefault.call("disableDefaultValues");
+assertResultDefault.call("utf16");
+assertResultDefault.call("specialCharsIso88591");
+assertResultDefault.call("specialCharsUsAscii");
+assertResultDefault.call("specialCharsUtf8");
+assertResultDefault.call("specialCharsUtf16");
+assertResultDefault.call("specialCharsUtf16Be");
+assertResultDefault.call("specialCharsUtf16Le");
+
+assertResultCustom.call("lang");
+assert new File(basedir, "custom/output/maven-properties-plugin-basic/custom/output/lang_de.properties").isFile();
+assert new File(basedir, "custom/output/maven-properties-plugin-basic/custom/output/lang_en.properties").isFile();
+assert !new File(basedir, "custom/output/maven-properties-plugin-basic/custom/output/something-else_de.properties").isFile();
+assert !new File(basedir, "custom/output/maven-properties-plugin-basic/custom/output/something-else_en.properties").isFile();

@@ -5,7 +5,6 @@ import static com.github.blutorange.multiproperties_maven_plugin.common.Collecti
 import static com.github.blutorange.multiproperties_maven_plugin.common.FileHelper.getIncludedFiles;
 import static com.github.blutorange.multiproperties_maven_plugin.common.FileHelper.resolve;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
@@ -29,14 +28,14 @@ public class GenerateMojo extends AbstractMojo {
    * base directory of the current project.
    */
   @Parameter(property = "baseDir", defaultValue = "${project.basedir}")
-  private File baseDir;
+  private String baseDir;
 
   /**
    * Base directory against which relative source (input) file paths are resolved. When this is a relative path, it is
    * resolved against the <code>baseDir</code>. Defaults to the <code>src/main/resources</code> directory.
    */
   @Parameter(property = "baseSourceDir", defaultValue = "src/main/resources")
-  private File baseSourceDir;
+  private String baseSourceDir;
 
   /**
    * Base directory against which relative output paths in the multiproperties file are resolved. If this this is a
@@ -48,7 +47,7 @@ public class GenerateMojo extends AbstractMojo {
    * parent BOM project.
    */
   @Parameter(property = "baseTargetDir")
-  private File baseTargetDir;
+  private String baseTargetDir;
 
   /**
    * Multiproperties files to process. If the path is relative, it is resolved against the given <code>baseDir</code>,
@@ -125,7 +124,7 @@ public class GenerateMojo extends AbstractMojo {
       while (parent.getParent() != null) {
         parent = parent.getParent();
       }
-      baseTargetDir = parent.getBasedir();
+      baseTargetDir = parent.getBasedir().getAbsolutePath();
     }
   }
 

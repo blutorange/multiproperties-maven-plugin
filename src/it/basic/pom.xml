@@ -23,6 +23,26 @@
 						</goals>
 						<configuration></configuration>
 					</execution>
+					<execution>
+						<id>custom-generate</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<removeFirstPathSegment>false</removeFirstPathSegment>
+							<baseDir>${project.basedir}/custom</baseDir>
+							<baseSourceDir>input</baseSourceDir>
+							<baseTargetDir>output</baseTargetDir>
+							<multipropertiesFiles>
+								<includes>
+									<include>**/*.txt</include>
+								</includes>
+								<excludes>
+									<exclude>*thing*</exclude>
+								</excludes>
+							</multipropertiesFiles>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>

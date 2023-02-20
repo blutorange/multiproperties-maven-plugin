@@ -122,8 +122,8 @@ public final class FileHelper {
    * @param target Target to resolve.
    * @return An absolute path, the result of resolving target against the given base directory.
    */
-  public static Path resolve(Path baseDir, File target) {
-    return resolve(baseDir, target != null ? target.toPath() : null);
+  public static Path resolve(Path baseDir, String target) {
+    return resolve(baseDir, target != null ? Paths.get(target) : null);
   }
 
   /**
