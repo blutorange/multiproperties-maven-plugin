@@ -32,16 +32,13 @@ public final class MultipropertiesGenerator {
    */
   public void process(Path file) throws Exception {
     final var parsed = MultipropertiesParser.parse(file);
-    final var items = parsed.getItems();
     final var handler = OutputHandlerFactory.forName(parsed.getHandler());
     final var handlerConfigurations = parsed.getHandlerConfigurations();
-    final var fileDescription = parsed.getFileDescription();
     logger.info(String.format("Using output handler <%s>", handler.getName()));
     for (final var handlerConfiguration : handlerConfigurations) {
       final var columnKey = handlerConfiguration.getColumnKey();
-      final var configurationString = handlerConfiguration.getConfigurationString();
       logger.info(String.format("Processing column <%s>", columnKey));
-      final var params = new OutputParams(logger, targetDir, removeFirstPathSegment, configurationString, fileDescription, items, columnKey);
+      final var params = new OutputParams(logger, targetDir, removeFirstPathSegment, parsed, handlerConfiguration);
       handler.handleProperties(params);
     }
   }
