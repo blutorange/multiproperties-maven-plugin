@@ -40,6 +40,23 @@ public final class Property extends Item {
   }
 
   /**
+   * @param columnKey Key of a column.
+   * @return The resolved value for the column, either the value if present or the default value. <code>null</code> if
+   * neither a value nor a default exists.
+   */
+  public String getResolvedValue(String columnKey) {
+    return valueMap.getOrDefault(columnKey, defaultValue);
+  }
+
+  /**
+   * @param columnKey Key of a column.
+   * @return The value for the column, may be <code>null</code>.
+   */
+  public String getValue(String columnKey) {
+    return valueMap.get(columnKey);
+  }
+
+  /**
    * @return Map with the values for each column. The key is the column key, the value the value for that column.
    */
   public Map<String, String> getValueMap() {
@@ -51,13 +68,5 @@ public final class Property extends Item {
    */
   public boolean isDisabled() {
     return disabled;
-  }
-
-  public String getResolvedValue(String columnKey) {
-    return valueMap.getOrDefault(columnKey, defaultValue);
-  }
-
-  public String getValue(String columnKey) {
-    return valueMap.get(columnKey);
   }
 }

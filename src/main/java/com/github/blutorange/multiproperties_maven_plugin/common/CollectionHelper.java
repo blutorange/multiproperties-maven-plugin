@@ -9,14 +9,6 @@ public final class CollectionHelper {
   private CollectionHelper() {}
 
   /**
-   * @param collection A collection to check, may be <code>null</code>.
-   * @return <code>true</code> if the collection is <code>null</code> or empty.
-   */
-  public static boolean isCollectionEmpty(Collection<?> collection) {
-    return collection == null || collection.isEmpty();
-  }
-
-  /**
    * @param collections A list of collections to check, each may be <code>null</code>.
    * @return <code>true</code> if the collection is <code>null</code> or empty.
    */
@@ -30,5 +22,13 @@ public final class CollectionHelper {
       }
     }
     return true;
+  }
+
+  /**
+   * @param collection A collection to check, may be <code>null</code>.
+   * @return <code>true</code> if the collection is <code>null</code> or empty.
+   */
+  public static boolean isCollectionEmpty(Collection<?> collection) {
+    return collection == null || collection.isEmpty();
   }
 }

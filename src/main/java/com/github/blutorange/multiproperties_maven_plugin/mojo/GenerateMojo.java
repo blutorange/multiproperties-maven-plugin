@@ -51,13 +51,6 @@ public class GenerateMojo extends AbstractMojo {
   private File baseTargetDir;
 
   /**
-   * When <code>true</code>, remove the first path segment from the multiproperties output file path. The first segment
-   * is usually the name of the Eclipse project, which may be different from the name of the folder itself.
-   */
-  @Parameter(property = "removeFirstPathSegment", defaultValue = "true")
-  private boolean removeFirstPathSegment;
-
-  /**
    * Multiproperties files to process. If the path is relative, it is resolved against the given <code>baseDir</code>,
    * i.e. the base directory of the current project by default. By default, all multiproperties files in
    * <code>baseSourceDir</code> project resources directory are processed.
@@ -69,6 +62,13 @@ public class GenerateMojo extends AbstractMojo {
 
   @Parameter(defaultValue = "${project}", readonly = true)
   private MavenProject project;
+
+  /**
+   * When <code>true</code>, remove the first path segment from the multiproperties output file path. The first segment
+   * is usually the name of the Eclipse project, which may be different from the name of the folder itself.
+   */
+  @Parameter(property = "removeFirstPathSegment", defaultValue = "true")
+  private boolean removeFirstPathSegment;
 
   /**
    * When set to <code>true</code>, skip execution of this plugin. Can also be set on the command line via
@@ -114,15 +114,6 @@ public class GenerateMojo extends AbstractMojo {
     }
   }
 
-  private MultipropertiesGenerator createGenerator(Path baseSourceDir, Path baseTargetDir) {
-    final var builder = MultipropertiesGenerator.builder();
-    builder.withLogger(getLog());
-    builder.withSourceDir(baseSourceDir);
-    builder.withTargetDir(baseTargetDir);
-    builder.withRemoveFirstPathSegment(removeFirstPathSegment);
-    return builder.build();
-  }
-
   private void applyDefaults() {
     if (multipropertiesFiles == null || areAllCollectionsEmpty(multipropertiesFiles.getIncludes(), multipropertiesFiles.getExcludes())) {
       multipropertiesFiles = new FileSet();
@@ -136,5 +127,14 @@ public class GenerateMojo extends AbstractMojo {
       }
       baseTargetDir = parent.getBasedir();
     }
+  }
+
+  private MultipropertiesGenerator createGenerator(Path baseSourceDir, Path baseTargetDir) {
+    final var builder = MultipropertiesGenerator.builder();
+    builder.withLogger(getLog());
+    builder.withSourceDir(baseSourceDir);
+    builder.withTargetDir(baseTargetDir);
+    builder.withRemoveFirstPathSegment(removeFirstPathSegment);
+    return builder.build();
   }
 }

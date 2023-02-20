@@ -22,6 +22,7 @@ import java.util.stream.IntStream;
 import org.codehaus.plexus.util.DirectoryScanner;
 
 import com.github.blutorange.multiproperties_maven_plugin.mojo.FileSet;
+
 /**
  * Utility methods for working with paths and files.
  */
@@ -100,6 +101,23 @@ public final class FileHelper {
   }
 
   /**
+   * Removes the first segment of the given path, e.g. turns {@code some/path/to/file} into {path/to/file}.
+   * @param path Path to process.
+   * @return The path with the first segment removed. When the path has no or only a single segment, an empty path is
+   * returned.
+   */
+  public static String removeFirstPathSegmentFromString(String path) {
+    if (isEmpty(path)) {
+      return "";
+    }
+    final var parsed = Paths.get(path);
+    if (parsed.getNameCount() <= 1) {
+      return "";
+    }
+    return parsed.subpath(1, parsed.getNameCount()).toString();
+  }
+
+  /**
    * @param baseDir Base directory.
    * @param target Target to resolve.
    * @return An absolute path, the result of resolving target against the given base directory.
@@ -120,16 +138,5 @@ public final class FileHelper {
   private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
     final var seen = new HashSet<>();
     return item -> seen.add(keyExtractor.apply(item));
-  }
-
-  public static String removeFirstPathSegmentFromString(String path) {
-    if (isEmpty(path)) {
-      return "";
-    }
-    final var parsed = Paths.get(path);
-    if (parsed.getNameCount() <= 1) {
-      return "";
-    }
-    return parsed.subpath(1, parsed.getNameCount()).toString();
   }
 }

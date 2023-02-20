@@ -11,9 +11,9 @@ import java.nio.charset.CharsetEncoder;
 final class JavaPropertiesWriter {
   private static final String LINE_SEPARATOR = "\r\n";
 
-  private final Writer writer;
-
   private final CharsetEncoder encoder;
+
+  private final Writer writer;
 
   public JavaPropertiesWriter(Writer writer, Charset charset) {
     this.writer = writer;
@@ -100,7 +100,7 @@ final class JavaPropertiesWriter {
           break;
         default:
           nonWhitespace = true;
-          if (c >= 32 && c != 127 &&  encoder.canEncode(Character.toString(c))) {
+          if (c >= 32 && c != 127 && encoder.canEncode(Character.toString(c))) {
             sb.appendCodePoint(c);
           }
           else {

@@ -10,12 +10,12 @@ import com.github.blutorange.multiproperties_maven_plugin.parser.Item;
 
 final class OutputParams implements IOutputParams {
   private final Path baseDir;
-  private final String handleConfigurationString;
-  private final Log logger;
-  private final List<Item> items;
-  private final boolean removeFirstPathSegment;
   private final String columnKey;
   private final String fileDescription;
+  private final String handleConfigurationString;
+  private final List<Item> items;
+  private final Log logger;
+  private final boolean removeFirstPathSegment;
 
   public OutputParams(Log logger, Path baseDir, boolean removeFirstPathSegment, String handleConfigurationString, String fileDescription, List<Item> items, String columnKey) {
     this.logger = logger;
@@ -33,13 +33,18 @@ final class OutputParams implements IOutputParams {
   }
 
   @Override
-  public String getHandlerConfigurationString() {
-    return handleConfigurationString;
+  public String getColumnKey() {
+    return columnKey;
   }
 
   @Override
-  public Log getLogger() {
-    return logger;
+  public String getFileDescription() {
+    return fileDescription;
+  }
+
+  @Override
+  public String getHandlerConfigurationString() {
+    return handleConfigurationString;
   }
 
   @Override
@@ -48,17 +53,12 @@ final class OutputParams implements IOutputParams {
   }
 
   @Override
+  public Log getLogger() {
+    return logger;
+  }
+
+  @Override
   public boolean isRemoveFirstPathSegment() {
     return removeFirstPathSegment;
-  }
-
-  @Override
-  public String getColumnKey() {
-    return columnKey;
-  }
-
-  @Override
-  public String getFileDescription() {
-    return fileDescription;
   }
 }

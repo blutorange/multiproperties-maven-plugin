@@ -25,24 +25,24 @@ public interface IOutputParams {
   String getColumnKey();
 
   /**
-   * @return Configuration for the handler.
-   */
-  String getHandlerConfigurationString();
-
-  /**
-   * @return Logger for logging progress, warnings or errors.
-   */
-  Log getLogger();
-
-  /**
    * @return The description of the multiproperties file.
    */
   String getFileDescription();
 
   /**
+   * @return Configuration for the handler.
+   */
+  String getHandlerConfigurationString();
+
+  /**
    * @return Items to process, either a {@link Comment}, a {@link Property}, or {@link Empty}.
    */
   List<Item> getItems();
+
+  /**
+   * @return Logger for logging progress, warnings or errors.
+   */
+  Log getLogger();
 
   /**
    * @return <code>true</code> if the first path segment of the output file path should be removed.

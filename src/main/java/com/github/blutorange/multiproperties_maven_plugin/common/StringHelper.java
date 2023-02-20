@@ -30,6 +30,21 @@ public class StringHelper {
   }
 
   /**
+   * @param value String to pad.
+   * @param length Length to which to pad.
+   * @param padChar Character with which to pad.
+   * @return The string with the padding char added at the beginning if the string is smaller than the target length.
+   */
+  public static String padLeft(String value, int length, char padChar) {
+    final var sb = new StringBuilder();
+    for (var i = length - value.length(); i-- > 0;) {
+      sb.append(padChar);
+    }
+    sb.append(value);
+    return sb.toString();
+  }
+
+  /**
    * Removes the prefix from the beginning of the string, if it has that prefix.
    * @param value String to process.
    * @param prefix Prefix to remove.
@@ -43,14 +58,5 @@ public class StringHelper {
       return prefix;
     }
     return value.startsWith(prefix) ? value.substring(prefix.length()) : value;
-  }
-
-  public static String padLeft(String value, int length, char padChar) {
-    final var sb = new StringBuilder();
-    for (var i = length - value.length(); i-- > 0;) {
-      sb.append(padChar);
-    }
-    sb.append(value);
-    return sb.toString();
   }
 }

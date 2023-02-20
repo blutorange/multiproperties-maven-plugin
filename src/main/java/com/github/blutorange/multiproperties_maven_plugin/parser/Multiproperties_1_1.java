@@ -7,13 +7,17 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.github.blutorange.multiproperties_maven_plugin.xsd.version_1_1.MultiProperties;
-import com.github.blutorange.multiproperties_maven_plugin.xsd.version_1_1.MultiProperties.Records.Property.Value;
 
 final class Multiproperties_1_1 implements IMultiproperties {
   private final MultiProperties root;
 
   public Multiproperties_1_1(MultiProperties root) {
     this.root = root;
+  }
+
+  @Override
+  public String getFileDescription() {
+    return root.getDescription();
   }
 
   @Override
@@ -27,11 +31,6 @@ final class Multiproperties_1_1 implements IMultiproperties {
         .getColumn() //
         .stream() //
         .map(column -> new HandlerConfiguration(column.getName(), column.getHandlerConfiguration())).collect(toList());
-  }
-  
-  @Override
-  public String getFileDescription() {
-    return root.getDescription();
   }
 
   @Override
@@ -72,9 +71,5 @@ final class Multiproperties_1_1 implements IMultiproperties {
       }
     }
     return result;
-  }
-
-  private String resolveValue(Value value, String defaultValue) {
-    return value.isDisabled() ? defaultValue : value.getValue();
   }
 }

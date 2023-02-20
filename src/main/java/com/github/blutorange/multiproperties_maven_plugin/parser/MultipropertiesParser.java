@@ -83,6 +83,6 @@ public final class MultipropertiesParser {
     final var builder = documentBuilderFactory.newDocumentBuilder();
     final var document = builder.parse(file.toFile());
     final var version = compileXPath("MultiProperties/Version/text()").evaluate(document);
-    return defaultIfEmpty(version ,"");
+    return defaultIfEmpty(version, "");
   }
 }

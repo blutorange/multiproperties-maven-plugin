@@ -16,6 +16,11 @@ final class Multiproperties_1_0 implements IMultiproperties {
   }
 
   @Override
+  public String getFileDescription() {
+    return root.getDescription();
+  }
+
+  @Override
   public String getHandler() {
     return root.getHandler();
   }
@@ -26,11 +31,6 @@ final class Multiproperties_1_0 implements IMultiproperties {
         .getColumn() //
         .stream() //
         .map(column -> new HandlerConfiguration(column.getName(), column.getHandlerConfiguration())).collect(toList());
-  }
-
-  @Override
-  public String getFileDescription() {
-    return root.getDescription();
   }
 
   @Override

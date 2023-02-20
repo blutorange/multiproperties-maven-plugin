@@ -57,7 +57,7 @@ final class JavaPropertiesHandler implements IOutputHandler {
       propertiesWriter.writeComment(params.getFileDescription(), true);
       propertiesWriter.writeLineBreak();
     }
-    
+
     if (configuration.isInsertColumnDescriptionAsComment()) {
       // Weird, but that's how the Eclipse add-on behaves currently...
       propertiesWriter.writeLineBreak();
