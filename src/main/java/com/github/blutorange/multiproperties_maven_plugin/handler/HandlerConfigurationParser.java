@@ -2,6 +2,8 @@ package com.github.blutorange.multiproperties_maven_plugin.handler;
 
 import static com.github.blutorange.multiproperties_maven_plugin.common.StringHelper.defaultIfEmpty;
 
+import java.nio.charset.StandardCharsets;
+
 final class HandlerConfigurationParser {
   private HandlerConfigurationParser() {}
 
@@ -35,7 +37,7 @@ final class HandlerConfigurationParser {
     config.setInsertColumnDescriptionAsComment(getBoolean(parts, 2));
     config.setWriteDisabledPropertiesAsComments(getBoolean(parts, 3));
     config.setDisableDefaultValues(getBoolean(parts, 4));
-    config.setEncoding(getString(parts, 5));
+    config.setEncoding(getString(parts, 5, StandardCharsets.ISO_8859_1.name()));
 
     return config;
   }
@@ -53,13 +55,21 @@ final class HandlerConfigurationParser {
   }
 
   private static boolean getBoolean(String[] parts, int index) {
-    return Boolean.parseBoolean(getString(parts, index));
+    return getBoolean(parts, index, false);
+  }
+
+  private static boolean getBoolean(String[] parts, int index, boolean defaultValue) {
+    return Boolean.parseBoolean(getString(parts, index, Boolean.toString(defaultValue)));
   }
 
   private static String getString(String[] parts, int index) {
+    return getString(parts, index, "");
+  }
+
+  private static String getString(String[] parts, int index, String defaultValue) {
     if (index >= parts.length) {
-      return "";
+      return defaultValue;
     }
-    return parts[index];
+    return defaultIfEmpty(parts[index], defaultValue);
   }
 }
