@@ -48,6 +48,7 @@ final class Multiproperties_1_2 implements IMultiproperties {
         final var values = property.getValue();
         final var defaultValue = property.getDefaultValue();
         final var disabled = property.isDisabled();
+        final var multiline = property.isMultiLine() != null && property.isMultiLine().booleanValue() == true;
         if (values.size() != columnKeys.length) {
           throw new IllegalArgumentException(String.format("Property <%s> must have exactly <%d> value entries.", name, columnKeys.length));
         }
@@ -59,7 +60,7 @@ final class Multiproperties_1_2 implements IMultiproperties {
           }
           valueMap.put(columnKeys[index], value.getValue());
         }
-        final var mapped = new Property(name, disabled, defaultValue, valueMap);
+        final var mapped = new Property(name, disabled, defaultValue, valueMap, multiline);
         result.add(mapped);
       }
       else if (record instanceof MultiProperties.Records.Comment) {

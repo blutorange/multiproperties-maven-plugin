@@ -8,6 +8,7 @@ import java.util.Map;
 public final class Property extends Item {
   private final String defaultValue;
   private final boolean disabled;
+  private final boolean multiline;
   private final String name;
   private final Map<String, String> valueMap;
 
@@ -17,12 +18,14 @@ public final class Property extends Item {
    * @param defaultValue Default value to use when no value exists for a column.
    * @param valueMap Map with the values for each column. The key is the column key, the value the value for that
    * column.
+   * @param multiline Whether the property value may span multiple lines.
    */
-  public Property(String name, boolean disabled, String defaultValue, Map<String, String> valueMap) {
+  public Property(String name, boolean disabled, String defaultValue, Map<String, String> valueMap, boolean multiline) {
     this.name = name;
     this.disabled = disabled;
     this.defaultValue = defaultValue;
     this.valueMap = valueMap;
+    this.multiline = multiline;
   }
 
   /**
@@ -55,7 +58,7 @@ public final class Property extends Item {
   public String getValue(String columnKey) {
     return valueMap.get(columnKey);
   }
-
+  
   /**
    * @return Map with the values for each column. The key is the column key, the value the value for that column.
    */
@@ -68,5 +71,12 @@ public final class Property extends Item {
    */
   public boolean isDisabled() {
     return disabled;
+  }
+
+  /**
+   * @return Whether the property value may span multiple lines.
+   */
+  public boolean isMultiline() {
+    return multiline;
   }
 }

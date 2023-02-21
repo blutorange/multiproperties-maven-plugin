@@ -59,7 +59,7 @@ final class Multiproperties_1_1 implements IMultiproperties {
           }
           valueMap.put(columnKeys[index], value.getValue());
         }
-        final var mapped = new Property(name, disabled, defaultValue, valueMap);
+        final var mapped = new Property(name, disabled, defaultValue, valueMap, false);
         result.add(mapped);
       }
       else if (record instanceof MultiProperties.Records.Comment) {
