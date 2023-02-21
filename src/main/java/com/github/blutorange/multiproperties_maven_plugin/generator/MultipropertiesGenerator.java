@@ -8,6 +8,7 @@ import org.apache.maven.plugin.logging.Log;
 
 import com.github.blutorange.multiproperties_maven_plugin.handler.Handler;
 import com.github.blutorange.multiproperties_maven_plugin.handler.HandlerImplementor;
+import com.github.blutorange.multiproperties_maven_plugin.handler.HandlerImplementorContextBuilder;
 import com.github.blutorange.multiproperties_maven_plugin.mojo.SkipOutputMode;
 import com.github.blutorange.multiproperties_maven_plugin.parser.MultipropertiesParser;
 
@@ -17,9 +18,7 @@ import com.github.blutorange.multiproperties_maven_plugin.parser.Multiproperties
 public final class MultipropertiesGenerator {
   private final List<Handler> handlers;
   private final Log logger;
-  private final boolean removeFirstPathSegment;
   private final SkipOutputMode skipMode;
-  @SuppressWarnings("unused")
   private final Path sourceDir;
   private final Path targetDir;
 
@@ -29,7 +28,6 @@ public final class MultipropertiesGenerator {
     this.skipMode = builder.skipMode;
     this.sourceDir = builder.sourceDir;
     this.targetDir = builder.targetDir;
-    this.removeFirstPathSegment = builder.removeFirstPathSegment;
   }
 
   /**
@@ -38,6 +36,7 @@ public final class MultipropertiesGenerator {
    * @throws Exception When the file could not be processed, e.g. when the file does not exist, is invalid or the output
    * could not be written.
    */
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public void process(Path file) throws Exception {
     final var parsed = MultipropertiesParser.parse(file);
     for (final var handler : handlers) {
@@ -48,19 +47,20 @@ public final class MultipropertiesGenerator {
         final var params = outputParamsBuilder() //
             .withInputFile(file) //
             .withMultiproperties(parsed) //
+            .withConfiguration(handler) //
             .withHandlerConfiguration(handlerConfiguration) //
             .build();
-        implementor.handleProperties(params);
+        implementor.handleProperties((DefaultHandlerImplementorContext)params);
       }
     }
   }
 
-  private DefaultOutputParams.Builder outputParamsBuilder() {
-    return DefaultOutputParams.builder() //
+  private <C extends Handler> HandlerImplementorContextBuilder<C> outputParamsBuilder() {
+    return DefaultHandlerImplementorContext.<C> builder() //
         .withLogger(logger) //
-        .withBaseDir(targetDir) //
-        .withSkipMode(skipMode) //
-        .withRemoveFirstPathSegment(removeFirstPathSegment);
+        .withSourceDir(sourceDir) //
+        .withTargetDir(targetDir) //
+        .withSkipMode(skipMode);
   }
 
   /**
@@ -70,7 +70,7 @@ public final class MultipropertiesGenerator {
     return new MultipropertiesGeneratorBuilder();
   }
 
-  private static HandlerImplementor instantiateImplementor(Handler handler) {
+  private static HandlerImplementor<?> instantiateImplementor(Handler handler) {
     try {
       final var ctor = handler.getImplementorClass().getConstructor();
       return ctor.newInstance();

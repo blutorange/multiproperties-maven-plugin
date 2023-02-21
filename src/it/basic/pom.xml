@@ -12,9 +12,12 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>@project.groupId@</groupId>
-				<artifactId>@project.artifactId@</artifactId>
-				<version>@project.version@</version>
+				<!--				<groupId>@project.groupId@</groupId>-->
+				<!--				<artifactId>@project.artifactId@</artifactId>-->
+				<!--				<version>@project.version@</version>-->
+				<groupId>com.github.blutorange</groupId>
+				<artifactId>multiproperties-maven-plugin</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
 				<executions>
 					<execution>
 						<id>default-generate</id>
@@ -28,7 +31,6 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<removeFirstPathSegment>false</removeFirstPathSegment>
 							<baseDir>${project.basedir}/custom</baseDir>
 							<baseSourceDir>input</baseSourceDir>
 							<baseTargetDir>output</baseTargetDir>
@@ -46,6 +48,28 @@
 									</extensions>
 								</fileSet>
 							</fileSets>
+							<handlers>
+								<handler implementation="com.github.blutorange.multiproperties_maven_plugin.handler.DefaultHandler">
+									<removeFirstPathSegment>false</removeFirstPathSegment>
+								</handler>
+							</handlers>
+						</configuration>
+					</execution>
+					<execution>
+						<id>handlers-builtin</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<baseDir>${project.basedir}</baseDir>
+							<baseSourceDir>src/main/handler-builtin</baseSourceDir>
+							<baseTargetDir>target/generated-resources</baseTargetDir>
+							<handlers>
+								<handler implementation="com.github.blutorange.multiproperties_maven_plugin.handler.JavaPropertiesHandler">
+									<outputPath>#{path}/#{basename}_#{key}.properties</outputPath>
+									<encoding>UTF-8</encoding>
+								</handler>
+							</handlers>
 						</configuration>
 					</execution>
 				</executions>

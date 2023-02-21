@@ -20,6 +20,10 @@ def assertResultCustom = { name ->
   assertResult("custom/output/maven-properties-plugin-basic/custom/output", "custom/expected", name);
 }
 
+def assertResultHandlersBuiltin = { name ->
+  assertResult("target/generated-resources/input/dir-handler-builtin", "src/main/handler-builtin/expected", name);
+}
+
 assertResultDefault.call("localization");
 assertResultDefault.call("insertFileDescription");
 assertResultDefault.call("insertColumnDescription");
@@ -39,3 +43,8 @@ assert new File(basedir, "custom/output/maven-properties-plugin-basic/custom/out
 assert new File(basedir, "custom/output/maven-properties-plugin-basic/custom/output/lang_en.properties").isFile();
 assert !new File(basedir, "custom/output/maven-properties-plugin-basic/custom/output/something-else_de.properties").isFile();
 assert !new File(basedir, "custom/output/maven-properties-plugin-basic/custom/output/something-else_en.properties").isFile();
+
+assertResultHandlersBuiltin("translations");
+assertResultHandlersBuiltin("translations2");
+assertResultHandlersBuiltin("sub/more");
+

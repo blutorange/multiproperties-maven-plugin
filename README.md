@@ -1,5 +1,7 @@
 # multiproperties-maven-plugin
 
+## Overview
+
 Maven plugin for generating derived files from a multiproperties file, see 
 
 * https://github.com/skazsi/multiproperties 
@@ -19,11 +21,10 @@ Maven plugin for generating derived files from a multiproperties file, see
 ```
 
 By default, this processes all `*.multiproperties` files from all resource folders and writes the `*.properties`
-output files. You may want to use the `baseDir`, `baseSourceDir`, `baseTargetDir` and `fileSets` settings
-to configure which files to process.
+output files to the directory as configured in the multiproperties. You may want to use the `baseDir`,
+`baseSourceDir`, `baseTargetDir` and `fileSets` settings to configure which files to process.
 
 ---
-
 
 Currently there is only an Eclipse addon editor which creates the derived `*.properties` files when the multiproperties file is saved. This is bad because
 
@@ -49,3 +50,36 @@ Other than that, it should generate the same output as the Eclipse addon, with a
 
 Note that the setting `Insert description of column in the beginning as comment` currently does not do what it advertises, it only add a line break at the beginning of the file. This plugin intentionally reproduces this behavior as I would not consider that to be
 a major bug and it does not result in broken properties files or missing data.
+
+## Advanced usage
+
+You might also want to disable the Eclipse addon so that it does not produce any output and use it only for editing the
+multiproperties file. In that case, you can set the handler to `none` and add a custom handler configuration in the pom:
+
+```xml
+<plugin>
+	<groupId>com.github.blutorange</groupId>
+	<artifactId>multiproperties-maven-plugin</artifactId>
+	<version>${multiproperties-maven-plugin.version}</version>
+	<executions>
+		<execution>
+			<id>handlers-builtin</id>
+			<goals>
+				<goal>generate</goal>
+			</goals>
+			<configuration>
+				<baseDir>${project.basedir}</baseDir>
+				<baseSourceDir>src/main/resources</baseSourceDir>
+				<baseTargetDir>target/generated-resources</baseTargetDir>
+				<handlers>
+					<handler implementation="com.github.blutorange.multiproperties_maven_plugin.handler.JavaPropertiesHandler">
+						<outputPath>#{path}/#{basename}_#{key}.properties</outputPath>
+						<encoding>UTF-8</encoding>
+					</handler>
+				</handlers>
+			</configuration>
+		</execution>
+	</executions>
+</plugin>
+```
+

@@ -2,7 +2,6 @@ package com.github.blutorange.multiproperties_maven_plugin.handler;
 
 import static com.github.blutorange.multiproperties_maven_plugin.common.FileHelper.createDirectoriesIfMissing;
 import static com.github.blutorange.multiproperties_maven_plugin.common.FileHelper.removeFirstPathSegmentFromString;
-import static com.github.blutorange.multiproperties_maven_plugin.common.FileHelper.shouldSkipOutput;
 import static com.github.blutorange.multiproperties_maven_plugin.common.StringHelper.isNotEmpty;
 import static com.github.blutorange.multiproperties_maven_plugin.common.StringHelper.removeStart;
 import static com.github.blutorange.multiproperties_maven_plugin.handler.HandlerConfigurationParser.javaProperties;
@@ -24,30 +23,35 @@ import com.github.blutorange.multiproperties_maven_plugin.parser.Property;
 /**
  * Implementor for the {@link JavaPropertiesHandler}.
  */
-public final class JavaPropertiesImplementor implements HandlerImplementor {
+public final class JavaPropertiesImplementor implements HandlerImplementor<JavaPropertiesHandler> {
   @Override
   public String getName() {
     return "Java Properties Handler";
   }
 
   @Override
-  public void handleProperties(HandlerImplementorContext params) throws Exception {
-    final var configuration = javaProperties(params.getHandlerConfigurationString());
-    withWriter(params, configuration, writer -> writeItems(params, configuration, writer));
+  public void handleProperties(HandlerImplementorContext<JavaPropertiesHandler> context) throws Exception {
+    withWriter(context, writer -> writeItems(context, writer));
   }
 
-  private void withWriter(HandlerImplementorContext params, JavaPropertiesHandler config, IoAction<Writer> action) throws IOException {
-    final var outputPath = resolveOutputPath(removeStart(config.getOutputPath(), "/"), params.isRemoveFirstPathSegment());
-    final var outputFile = params.getBaseDir().resolve(outputPath);
+  @Override
+  public JavaPropertiesHandler parseConfig(String configuration) {
+    return javaProperties(configuration);
+  }
+
+  private void withWriter(HandlerImplementorContext<JavaPropertiesHandler> ctx, IoAction<Writer> action) throws IOException {
+    final var config = ctx.getConfiguration();
+    final var outputPath = resolveOutputPath(removeStart(config.getOutputPath(), "/"), ctx.isRemoveFirstPathSegment());
+    final var outputFile = ctx.interpolateFilename(outputPath);
     final var encoding = Charset.forName(config.getEncoding());
 
-    if (shouldSkipOutput(params.getInputFile(), outputFile, params.getSkipMode())) {
-      params.getLogger().info(String.format("Skipping ouptut <%s>: %s", outputFile, params.getSkipMode().getReason()));
+    if (ctx.shouldSkipOutput(outputFile)) {
+      ctx.getLogger().info(String.format("Skipping ouptut <%s>: %s", outputFile, ctx.getSkipMode().getReason()));
       return;
     }
 
     createDirectoriesIfMissing(outputFile.getParent());
-    params.getLogger().info(String.format("Writing file <%s> with encoding <%s>", outputFile, encoding));
+    ctx.getLogger().info(String.format("Writing file <%s> with encoding <%s>", outputFile, encoding));
 
     try (final var out = Files.newOutputStream(outputFile, CREATE, WRITE, TRUNCATE_EXISTING)) {
       try (final var writer = new OutputStreamWriter(out, encoding)) {
@@ -64,25 +68,26 @@ public final class JavaPropertiesImplementor implements HandlerImplementor {
     propertiesWriter.writeLineBreak();
   }
 
-  private void writeItems(HandlerImplementorContext params, JavaPropertiesHandler configuration, Writer writer) throws IOException {
-    final var encoding = Charset.forName(configuration.getEncoding());
-    final var columnKey = params.getColumnKey();
+  private void writeItems(HandlerImplementorContext<JavaPropertiesHandler> ctx, Writer writer) throws IOException {
+    final var config = ctx.getConfiguration();
+    final var encoding = Charset.forName(config.getEncoding());
+    final var columnKey = ctx.getColumnKey();
 
     final var propertiesWriter = new JavaPropertiesWriter(writer, encoding);
 
-    if (configuration.isInsertFileDescriptionAsComment() && isNotEmpty(params.getFileDescription())) {
-      propertiesWriter.writeComment(params.getFileDescription(), true);
+    if (config.isInsertFileDescriptionAsComment() && isNotEmpty(ctx.getFileDescription())) {
+      propertiesWriter.writeComment(ctx.getFileDescription(), true);
       propertiesWriter.writeLineBreak();
     }
 
-    if (configuration.isInsertColumnDescriptionAsComment()) {
+    if (config.isInsertColumnDescriptionAsComment()) {
       // Weird, but that's how the Eclipse add-on behaves currently...
       propertiesWriter.writeLineBreak();
     }
 
-    for (final var item : params.getItems()) {
+    for (final var item : ctx.getItems()) {
       if (item instanceof Property) {
-        writeProperty(propertiesWriter, params, configuration, columnKey, (Property)item);
+        writeProperty(propertiesWriter, ctx, config, columnKey, (Property)item);
       }
       else if (item instanceof Comment) {
         writeComment(propertiesWriter, (Comment)item);
@@ -93,7 +98,8 @@ public final class JavaPropertiesImplementor implements HandlerImplementor {
     }
   }
 
-  private void writeProperty(JavaPropertiesWriter propertiesWriter, HandlerImplementorContext params, JavaPropertiesHandler configuration, String columnKey, Property property) throws IOException {
+  private void writeProperty(JavaPropertiesWriter propertiesWriter, HandlerImplementorContext<JavaPropertiesHandler> params, JavaPropertiesHandler configuration, String columnKey, Property property)
+      throws IOException {
     final var name = property.getName();
     final var value = configuration.isDisableDefaultValues() ? property.getValue(columnKey) : property.getResolvedValue(columnKey);
     if (value == null) {

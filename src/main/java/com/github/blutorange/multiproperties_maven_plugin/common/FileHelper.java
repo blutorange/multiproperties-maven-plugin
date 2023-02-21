@@ -7,7 +7,6 @@ import static com.github.blutorange.multiproperties_maven_plugin.common.StringHe
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -91,15 +90,12 @@ public final class FileHelper {
    * @return The path of the given {@code target}, relative to the specified {@code base} file.
    * @throws IOException When the file system could not be accessed.
    */
-  public static String relativizePath(File base, File target) throws IOException {
-    final Path targetPath = Paths.get(target.getCanonicalPath());
+  public static String relativizePath(Path base, Path target) throws IOException {
     if (base == null) {
-      return targetPath.toString();
+      return target.toString();
     }
     else {
-      final Path basePath = base.getCanonicalFile().toPath();
-      final String relativePath = basePath.relativize(targetPath).toString();
-      return relativePath;
+      return base.relativize(target).toString();
     }
   }
 
@@ -181,6 +177,19 @@ public final class FileHelper {
       default:
         throw new RuntimeException("Unhandled enum: " + skipInputMode);
     }
+  }
+
+  public static String getFileExtensionWithoutDot(String filename) {
+    return getFileExtensionWithoutDot(filename, false);
+  }
+
+  public static String getFileBasename(String filename) {
+    if (isEmpty(filename)) {
+      return "";
+    }
+    final var startIndex = 1 + Math.max(filename.lastIndexOf("/"), filename.lastIndexOf("\\"));
+    final var endIndex = filename.indexOf(".", startIndex);
+    return filename.substring(startIndex, endIndex >= 0 ? endIndex : filename.length());
   }
 
   private static String getFileExtensionWithoutDot(String filename, boolean caseInsensitive) {

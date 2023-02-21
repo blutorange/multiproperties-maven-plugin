@@ -47,13 +47,6 @@ public final class MultipropertiesGeneratorBuilder {
   }
 
   /**
-   * @param removeFirstPathSegment When <code>true</code>, removes the first path segment of each output file path.
-   */
-  public void withRemoveFirstPathSegment(boolean removeFirstPathSegment) {
-    this.removeFirstPathSegment = removeFirstPathSegment;
-  }
-
-  /**
    * @param skipMode Whether to skip recreating an output file.
    * @return This builder instance for chaining method calls.
    */

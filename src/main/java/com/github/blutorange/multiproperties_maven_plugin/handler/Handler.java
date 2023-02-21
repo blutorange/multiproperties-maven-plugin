@@ -7,5 +7,5 @@ public interface Handler {
   /**
    * @return Class which implements the business logic.
    */
-  Class<? extends HandlerImplementor> getImplementorClass();
+  Class<? extends HandlerImplementor<?>> getImplementorClass();
 }

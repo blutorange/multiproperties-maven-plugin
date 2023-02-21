@@ -5,6 +5,12 @@ import static com.github.blutorange.multiproperties_maven_plugin.common.StringHe
 final class HandlerConfigurationParser {
   private HandlerConfigurationParser() {}
 
+  public static DefaultHandler defaultHandler(String value) {
+    value = defaultIfEmpty(value, "");
+    final var config = new DefaultHandler();
+    return config;
+  }
+
   // Handler configuration:
   //
   // <FilePath>|<Flag1>|<Flag2>|<Flag3>|<Flag4>|<Encoding>
@@ -23,7 +29,6 @@ final class HandlerConfigurationParser {
     value = defaultIfEmpty(value, "");
 
     final var config = new JavaPropertiesHandler();
-
     final var parts = value.split("\\|");
     config.setOutputPath(getString(parts, 0));
     config.setInsertFileDescriptionAsComment(getBoolean(parts, 1));
@@ -32,6 +37,18 @@ final class HandlerConfigurationParser {
     config.setDisableDefaultValues(getBoolean(parts, 4));
     config.setEncoding(getString(parts, 5));
 
+    return config;
+  }
+
+  public static NoneHandler none(String value) {
+    value = defaultIfEmpty(value, "");
+    final var config = new NoneHandler();
+    return config;
+  }
+
+  public static TextFileHandler textFile(String value) {
+    value = defaultIfEmpty(value, "");
+    final var config = new TextFileHandler();
     return config;
   }
 

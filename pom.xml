@@ -80,6 +80,7 @@
 		<plexus-utils.version>3.5.0</plexus-utils.version>
 		<maven-plugin-annotations.version>3.7.1</maven-plugin-annotations.version>
 		<plexus-build-api.version>0.0.7</plexus-build-api.version>
+		<commons-text.version>1.10.0</commons-text.version>
 		<!-- Testing -->
 		<junit-jupiter.version>5.9.2</junit-jupiter.version>
 		<maven-plugin-testing-harness.version>3.3.0</maven-plugin-testing-harness.version>
@@ -117,6 +118,16 @@
 			<version>${plexus-utils.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.sonatype.plexus</groupId>
+			<artifactId>plexus-build-api</artifactId>
+			<version>${plexus-build-api.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<version>${commons-text.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>jakarta.xml.bind</groupId>
 			<artifactId>jakarta.xml.bind-api</artifactId>
 			<version>${jakarta.xml.bind-api.version}</version>
@@ -126,11 +137,6 @@
 			<artifactId>jaxb-impl</artifactId>
 			<version>${jaxb-impl.version}</version>
 			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.sonatype.plexus</groupId>
-			<artifactId>plexus-build-api</artifactId>
-			<version>${plexus-build-api.version}</version>
 		</dependency>
 		<!--Test-->
 		<dependency>

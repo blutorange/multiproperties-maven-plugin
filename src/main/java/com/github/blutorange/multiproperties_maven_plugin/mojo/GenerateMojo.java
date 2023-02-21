@@ -74,13 +74,6 @@ public class GenerateMojo extends AbstractMojo {
   private MavenProject project;
 
   /**
-   * When <code>true</code>, remove the first path segment from the multiproperties output file path. The first segment
-   * is usually the name of the Eclipse project, which may be different from the name of the folder itself.
-   */
-  @Parameter(property = "removeFirstPathSegment", defaultValue = "true")
-  private boolean removeFirstPathSegment;
-
-  /**
    * When set to <code>true</code>, skip execution of this plugin. Can also be set on the command line via
    * <code>-Dskip.multiproperties</code>
    */
@@ -122,9 +115,9 @@ public class GenerateMojo extends AbstractMojo {
    * <p>
    * To use your own handler implementation, write an implementation of
    * <code>com.github.blutorange.multiproperties_maven_plugin.handler.Handler</code> and include the class in the plugin
-   * execution via <code>&lt;depenencies&gt;</code>.
+   * execution via <code>&lt;dependencies&gt;</code>.
    */
-  @Parameter(property = "handlerManagment")
+  @Parameter(property = "handlers")
   private List<Handler> handlers;
 
   /**
@@ -201,13 +194,14 @@ public class GenerateMojo extends AbstractMojo {
     final var generator = createGenerator(baseSourcePath, baseTargetPath);
 
     for (final var inputFile : changedFiles) {
-      getLog().info(String.format("Processing multiproperties files <%s>", inputFile));
+      getLog().info(String.format("=== Processing multiproperties files <%s>", inputFile));
       try {
         generator.process(inputFile);
       }
       catch (final Exception e) {
         throw new MojoExecutionException("Could not process multiproperties file", e);
       }
+      getLog().info("\n");
     }
   }
 
@@ -225,8 +219,10 @@ public class GenerateMojo extends AbstractMojo {
     }
 
     if (handlers == null || handlers.isEmpty()) {
+      final var handler = new DefaultHandler();
+      handler.setRemoveFirstPathSegment(true);
       handlers = new ArrayList<>();
-      handlers.add(new DefaultHandler());
+      handlers.add(handler);
     }
 
     if (baseSourceDir == null) {
@@ -248,7 +244,6 @@ public class GenerateMojo extends AbstractMojo {
     builder.withHandlers(handlers);
     builder.withSourceDir(baseSourceDir);
     builder.withTargetDir(baseTargetDir);
-    builder.withRemoveFirstPathSegment(removeFirstPathSegment);
     builder.withSkipMode(skipOutputMode);
     return builder.build();
   }
