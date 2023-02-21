@@ -42,7 +42,7 @@ public final class MultipropertiesGenerator {
       final var implementor = instantiateImplementor(handler);
       logger.info(String.format("Using output handler <%s>", implementor.getName()));
       for (final var handlerConfiguration : parsed.getHandlerConfigurations()) {
-        logger.info(String.format("Processing column <%s>", handlerConfiguration.getColumnKey()));
+        logger.info(String.format("  Processing column <%s>", handlerConfiguration.getColumnKey()));
         final var params = outputParamsBuilder() //
             .withInputFile(file) //
             .withMultiproperties(parsed) //

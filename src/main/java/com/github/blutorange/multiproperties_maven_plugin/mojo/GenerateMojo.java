@@ -226,14 +226,14 @@ public class GenerateMojo extends AbstractMojo {
     final var generator = createGenerator(baseSourcePath, baseTargetPath);
 
     for (final var inputFile : changedFiles) {
-      getLog().info(String.format("=== Processing multiproperties files <%s>", inputFile));
+      getLog().info(String.format(">> Processing multiproperties files <%s>", inputFile));
       try {
         generator.process(inputFile);
       }
       catch (final Exception e) {
         throw new MojoExecutionException("Could not process multiproperties file", e);
       }
-      getLog().info("\n");
+      getLog().info("");
     }
   }
 

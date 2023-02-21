@@ -28,7 +28,7 @@ public final class DefaultHandlerImplementor implements HandlerImplementor<Defau
     final var delegateContext = ctx.derive(delegateConfig) //
         .withRemoveFirstPathSegment(config.isRemoveFirstPathSegment()) //
         .build();
-    ctx.getLogger().info(String.format("Delegating to output handler <%s>", delegate.getName()));
+    ctx.getLogger().info(String.format("  Delegating to output handler <%s>", delegate.getName()));
     delegate.handleProperties(delegateContext);
   }
 }

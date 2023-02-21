@@ -46,12 +46,12 @@ public final class JavaPropertiesImplementor implements HandlerImplementor<JavaP
     final var encoding = Charset.forName(config.getEncoding());
 
     if (ctx.shouldSkipOutput(outputFile)) {
-      ctx.getLogger().info(String.format("Skipping ouptut <%s>: %s", outputFile, ctx.getSkipMode().getReason()));
+      ctx.getLogger().info(String.format("    Skipping ouptut <%s>: %s", outputFile, ctx.getSkipMode().getReason()));
       return;
     }
 
     createDirectoriesIfMissing(outputFile.getParent());
-    ctx.getLogger().info(String.format("Writing file <%s> with encoding <%s>", outputFile, encoding));
+    ctx.getLogger().info(String.format("    Writing file <%s> with encoding <%s>", outputFile, encoding));
 
     try (final var out = Files.newOutputStream(outputFile, CREATE, WRITE, TRUNCATE_EXISTING)) {
       try (final var writer = new OutputStreamWriter(out, encoding)) {
