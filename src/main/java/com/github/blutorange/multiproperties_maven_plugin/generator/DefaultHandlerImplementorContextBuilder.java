@@ -18,7 +18,7 @@ final class DefaultHandlerImplementorContextBuilder<C extends Handler> implement
   C configuration;
   String defaultHandlerName;
   String fileDescription;
-  String handlerConfigurationString;
+  String defaultHandlerConfigurationString;
   Path inputFile;
   List<Item> items = Collections.emptyList();
   Log logger;
@@ -28,69 +28,75 @@ final class DefaultHandlerImplementorContextBuilder<C extends Handler> implement
   Path targetDir;
 
   DefaultHandlerImplementorContextBuilder() {}
-  
+
   @Override
   public DefaultHandlerImplementorContext<C> build() {
     return new DefaultHandlerImplementorContext<>(this);
   }
 
   @Override
-  public HandlerImplementorContextBuilder<C> withColumnKey(String columnKey) {
+  public DefaultHandlerImplementorContextBuilder<C> withColumnKey(String columnKey) {
     this.columnKey = columnKey;
     return this;
   }
 
   @Override
-  public HandlerImplementorContextBuilder<C> withConfiguration(C configuration) {
+  public DefaultHandlerImplementorContextBuilder<C> withConfiguration(C configuration) {
     this.configuration = configuration;
     return this;
   }
 
   @Override
-  public HandlerImplementorContextBuilder<C> withDefaultHandlerName(String defaultHandlerName) {
+  public DefaultHandlerImplementorContextBuilder<C> withDefaultHandlerName(String defaultHandlerName) {
     this.defaultHandlerName = defaultHandlerName;
     return this;
   }
 
   @Override
-  public HandlerImplementorContextBuilder<C> withFileDescription(String fileDescription) {
+  public DefaultHandlerImplementorContextBuilder<C> withFileDescription(String fileDescription) {
     this.fileDescription = fileDescription;
     return this;
   }
 
-  @Override
-  public HandlerImplementorContextBuilder<C> withHandlerConfiguration(HandlerConfiguration handlerConfiguration) {
+  /**
+   * @param handlerConfiguration The default handler configuration form the multiproperties file.
+   * @return This builder instance for chaining method calls.
+   */
+  public DefaultHandlerImplementorContextBuilder<C> withDefaultHandlerConfiguration(HandlerConfiguration handlerConfiguration) {
     withColumnKey(handlerConfiguration.getColumnKey());
-    withHandlerConfigurationString(handlerConfiguration.getConfigurationString());
+    withDefaultHandlerConfigurationString(handlerConfiguration.getConfigurationString());
     return this;
   }
 
   @Override
-  public HandlerImplementorContextBuilder<C> withHandlerConfigurationString(String handlerConfigurationString) {
-    this.handlerConfigurationString = handlerConfigurationString;
+  public DefaultHandlerImplementorContextBuilder<C> withDefaultHandlerConfigurationString(String defaultHandlerConfigurationString) {
+    this.defaultHandlerConfigurationString = defaultHandlerConfigurationString;
     return this;
   }
 
   @Override
-  public HandlerImplementorContextBuilder<C> withInputFile(Path inputFile) {
+  public DefaultHandlerImplementorContextBuilder<C> withInputFile(Path inputFile) {
     this.inputFile = inputFile;
     return this;
   }
 
   @Override
-  public HandlerImplementorContextBuilder<C> withItems(List<Item> items) {
+  public DefaultHandlerImplementorContextBuilder<C> withItems(List<Item> items) {
     this.items = items;
     return this;
   }
 
   @Override
-  public HandlerImplementorContextBuilder<C> withLogger(Log logger) {
+  public DefaultHandlerImplementorContextBuilder<C> withLogger(Log logger) {
     this.logger = logger;
     return this;
   }
 
-  @Override
-  public HandlerImplementorContextBuilder<C> withMultiproperties(IMultiproperties parsed) {
+  /**
+   * @param parsed The parsed multiproperties file.
+   * @return This builder instance for chaining method calls.
+   */
+  public DefaultHandlerImplementorContextBuilder<C> withMultiproperties(IMultiproperties parsed) {
     withDefaultHandlerName(parsed.getHandler());
     withFileDescription(parsed.getFileDescription());
     withItems(parsed.getItems());
@@ -98,25 +104,25 @@ final class DefaultHandlerImplementorContextBuilder<C extends Handler> implement
   }
 
   @Override
-  public HandlerImplementorContextBuilder<C> withRemoveFirstPathSegment(boolean removeFirstPathSegment) {
+  public DefaultHandlerImplementorContextBuilder<C> withRemoveFirstPathSegment(boolean removeFirstPathSegment) {
     this.removeFirstPathSegment = removeFirstPathSegment;
     return this;
   }
 
   @Override
-  public HandlerImplementorContextBuilder<C> withSkipMode(SkipOutputMode skipMode) {
+  public DefaultHandlerImplementorContextBuilder<C> withSkipMode(SkipOutputMode skipMode) {
     this.skipMode = skipMode;
     return this;
   }
 
   @Override
-  public HandlerImplementorContextBuilder<C> withSourceDir(Path sourceDir) {
+  public DefaultHandlerImplementorContextBuilder<C> withSourceDir(Path sourceDir) {
     this.sourceDir = sourceDir;
     return this;
   }
 
   @Override
-  public HandlerImplementorContextBuilder<C> withTargetDir(Path targetDir) {
+  public DefaultHandlerImplementorContextBuilder<C> withTargetDir(Path targetDir) {
     this.targetDir = targetDir;
     return this;
   }

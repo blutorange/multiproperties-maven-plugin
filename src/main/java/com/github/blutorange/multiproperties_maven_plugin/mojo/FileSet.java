@@ -24,7 +24,7 @@ public class FileSet {
   }
 
   /**
-   * @return Glob pattern for files to exclude.
+   * @return Glob pattern for files to exclude. Relative paths are resolved against <code>directory</code>.
    */
   public List<String> getExcludes() {
     return excludes != null ? excludes : new ArrayList<>();
@@ -39,7 +39,7 @@ public class FileSet {
   }
 
   /**
-   * @return Glob pattern for files to include.
+   * @return Glob pattern for files to include. Relative paths are resolved against <code>directory</code>.
    */
   public List<String> getIncludes() {
     return includes != null ? includes : new ArrayList<>();
@@ -76,7 +76,7 @@ public class FileSet {
   }
 
   /**
-   * @param excludes Glob pattern for files to exclude.
+   * @param excludes Glob pattern for files to exclude. Relative paths are resolved against <code>directory</code>.
    */
   public void setExcludes(List<String> excludes) {
     this.excludes = excludes;
@@ -91,7 +91,7 @@ public class FileSet {
   }
 
   /**
-   * @param includes Glob pattern for files to include.
+   * @param includes Glob pattern for files to include. Relative paths are resolved against <code>directory</code>.
    */
   public void setIncludes(List<String> includes) {
     this.includes = includes;

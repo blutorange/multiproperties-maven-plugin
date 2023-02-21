@@ -179,10 +179,18 @@ public final class FileHelper {
     }
   }
 
+  /**
+   * @param filename Name of a file, may contain a path.
+   * @return The extension of the file, without a leading dot.
+   */
   public static String getFileExtensionWithoutDot(String filename) {
     return getFileExtensionWithoutDot(filename, false);
   }
 
+  /**
+   * @param filename Name of a file, may contain a path.
+   * @return The base name of the file, i.e. the file name without the extension.
+   */
   public static String getFileBasename(String filename) {
     if (isEmpty(filename)) {
       return "";

@@ -10,6 +10,7 @@ public interface ItemMatcher<R, T extends Throwable> {
    * Matcher method invoked when a comment is encountered.
    * @param comment Comment to process.
    * @return Value to return to the caller.
+   * @throws T Exception to propagate to the caller.
    */
   default R comment(Comment comment) throws T {
     return null;
@@ -19,6 +20,7 @@ public interface ItemMatcher<R, T extends Throwable> {
    * Matcher method invoked when an empty item is encountered.
    * @param empty Empty item to process.
    * @return Value to return to the caller.
+   * @throws T Exception to propagate to the caller.
    */
   default R empty(Empty empty) throws T {
     return null;
@@ -28,6 +30,7 @@ public interface ItemMatcher<R, T extends Throwable> {
    * Matcher method invoked when a property is encountered.
    * @param property Property to process.
    * @return Value to return to the caller.
+   * @throws T Exception to propagate to the caller.
    */
   default R property(Property property) throws T {
     return null;
@@ -37,8 +40,9 @@ public interface ItemMatcher<R, T extends Throwable> {
    * Matcher method invoked when an unknown item type is encountered.
    * @param item Item to process.
    * @return Value to return to the caller.
+   * @throws T Exception to propagate to the caller.
    */
-  default <R> R unknown(Item item) throws T {
+  default R unknown(Item item) throws T {
     return null;
   }
 }

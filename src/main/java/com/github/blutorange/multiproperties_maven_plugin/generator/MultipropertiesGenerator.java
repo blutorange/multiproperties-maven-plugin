@@ -8,7 +8,6 @@ import org.apache.maven.plugin.logging.Log;
 
 import com.github.blutorange.multiproperties_maven_plugin.handler.Handler;
 import com.github.blutorange.multiproperties_maven_plugin.handler.HandlerImplementor;
-import com.github.blutorange.multiproperties_maven_plugin.handler.HandlerImplementorContextBuilder;
 import com.github.blutorange.multiproperties_maven_plugin.mojo.SkipOutputMode;
 import com.github.blutorange.multiproperties_maven_plugin.parser.MultipropertiesParser;
 
@@ -48,14 +47,14 @@ public final class MultipropertiesGenerator {
             .withInputFile(file) //
             .withMultiproperties(parsed) //
             .withConfiguration(handler) //
-            .withHandlerConfiguration(handlerConfiguration) //
+            .withDefaultHandlerConfiguration(handlerConfiguration) //
             .build();
         implementor.handleProperties((DefaultHandlerImplementorContext)params);
       }
     }
   }
 
-  private <C extends Handler> HandlerImplementorContextBuilder<C> outputParamsBuilder() {
+  private <C extends Handler> DefaultHandlerImplementorContextBuilder<C> outputParamsBuilder() {
     return DefaultHandlerImplementorContext.<C> builder() //
         .withLogger(logger) //
         .withSourceDir(sourceDir) //

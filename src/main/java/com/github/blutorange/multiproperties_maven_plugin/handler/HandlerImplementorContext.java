@@ -26,7 +26,7 @@ public interface HandlerImplementorContext<C> {
   <T extends Handler> HandlerImplementorContextBuilder<T> derive(T configuration);
 
   /**
-   * @return Key of the column for which to write the output.
+   * @return The name of the column for which to generate an output file.
    */
   String getColumnKey();
 
@@ -36,7 +36,7 @@ public interface HandlerImplementorContext<C> {
   C getConfiguration();
 
   /**
-   * @return The configuration string for the handler from the multiproperties file.
+   * @return The configuration string for the handler from the multiproperties file, if any.
    */
   String getDefaultHandlerConfigurationString();
 
@@ -46,7 +46,7 @@ public interface HandlerImplementorContext<C> {
   String getDefaultHandlerName();
 
   /**
-   * @return The description of the multiproperties file.
+   * @return The description from the multiproperties file.
    */
   String getFileDescription();
 
@@ -76,7 +76,7 @@ public interface HandlerImplementorContext<C> {
   Path getSourceDir();
 
   /**
-   * @return Base directory against which relative file paths should be resolved.
+   * @return Base directory against which relative output file paths should be resolved.
    */
   Path getTargetDir();
 

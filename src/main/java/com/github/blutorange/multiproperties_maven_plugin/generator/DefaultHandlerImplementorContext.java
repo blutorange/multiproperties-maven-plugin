@@ -36,7 +36,7 @@ final class DefaultHandlerImplementorContext<C extends Handler> implements Handl
     this.configuration = builder.configuration;
     this.defaultHandlerName = builder.defaultHandlerName;
     this.fileDescription = builder.fileDescription;
-    this.handlerConfigurationString = builder.handlerConfigurationString;
+    this.handlerConfigurationString = builder.defaultHandlerConfigurationString;
     this.items = builder.items;
     this.logger = builder.logger;
     this.removeFirstPathSegment = builder.removeFirstPathSegment;
@@ -53,7 +53,7 @@ final class DefaultHandlerImplementorContext<C extends Handler> implements Handl
         .withDefaultHandlerName(defaultHandlerName) //
         .withDefaultHandlerName(defaultHandlerName) //
         .withFileDescription(fileDescription) //
-        .withHandlerConfigurationString(handlerConfigurationString) //
+        .withDefaultHandlerConfigurationString(handlerConfigurationString) //
         .withItems(items) //
         .withLogger(logger) //
         .withRemoveFirstPathSegment(removeFirstPathSegment) //
@@ -140,7 +140,7 @@ final class DefaultHandlerImplementorContext<C extends Handler> implements Handl
     return FileHelper.shouldSkipOutput(inputFile, outputFile, skipMode);
   }
 
-  public static <C extends Handler> HandlerImplementorContextBuilder<C> builder() {
+  public static <C extends Handler> DefaultHandlerImplementorContextBuilder<C> builder() {
     return new DefaultHandlerImplementorContextBuilder<C>();
   }
 }

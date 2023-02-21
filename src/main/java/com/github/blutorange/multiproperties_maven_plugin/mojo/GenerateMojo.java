@@ -37,19 +37,18 @@ public class GenerateMojo extends AbstractMojo {
 
   /**
    * Base directory against which relative source (input) file paths are resolved. When this is a relative path, it is
-   * resolved against the <code>baseDir</code>. Defaults to the <code>src/main/resources</code> directory.
+   * resolved against the <code>baseDir</code>. Defaults to empty, i.e the same as <code>baseDir</code>.
    */
   @Parameter(property = "baseSourceDir")
   private String baseSourceDir;
 
   /**
    * Base directory against which relative output paths in the multiproperties file are resolved. If this this is a
-   * relative path, it is resolved against the <code>baseDir</code>. Defaults to the base directory of the topmost
-   * parent Maven project, with the name of that Maven project added.
+   * relative path, it is resolved against the <code>baseDir</code>. Defaults to empty, i.e the same as
+   * <code>baseDir</code>.
    * <p>
    * Note that the Eclipse multiproperties editor plugin resolves paths against the path of the Eclipse project, which
-   * we can only guess in a Maven build. For multi-module Maven projects in Eclipse, it appears to use the path of the
-   * parent BOM project.
+   * we can only guess in a Maven build.
    */
   @Parameter(property = "baseTargetDir")
   private String baseTargetDir;
@@ -58,10 +57,11 @@ public class GenerateMojo extends AbstractMojo {
   private BuildContext buildContext;
 
   /**
-   * Multiproperties files to process. If the path is relative, it is resolved against the given <code>baseDir</code>,
-   * i.e. the base directory of the current project by default.
+   * Multiproperties files to process. Relative paths in the <code>directory</code> of a file set are resolved against
+   * <code>baseSourceDir</code>, and relative paths in the <code>includes</code> of a file set are resolved against that
+   * directory.
    * <p>
-   * When both <code>baseSourceDir</code> and <code>multiproperties</code> are not given, defaults to all files with the
+   * When both <code>baseSourceDir</code> and <code>fileSets</code> are not given, defaults to all files with the
    * extension <code>multiproperties</code> from all resource folders of the current Maven project. Otherwise, defaults
    * to including <code>**&frasl;*.multiproperties</code>.
    * <p>
@@ -70,22 +70,41 @@ public class GenerateMojo extends AbstractMojo {
   @Parameter(property = "fileSets")
   private List<FileSet> fileSets;
 
-  @Parameter(defaultValue = "${project}", readonly = true)
-  private MavenProject project;
-
   /**
-   * When set to <code>true</code>, skip execution of this plugin. Can also be set on the command line via
-   * <code>-Dskip.multiproperties</code>
-   */
-  @Parameter(property = "skip", defaultValue = "${skip.multiproperties}")
-  private boolean skip;
-
-  /**
-   * Manage the output file handlers that control which files are generated from a multiproperties file.
+   * Manage the output file handlers that control which files are generated from a multiproperties file. By default,
+   * this is set to the <code>com.github.blutorange.multiproperties_maven_plugin.handler.DefaultHandler</code>, which
+   * delegates to the handler as defined in the multiproperties file.
    * <p>
-   * By default, this is set to the
-   * <code>com.github.blutorange.multiproperties_maven_plugin.handler.DefaultHandler</code> handler which delegated to
-   * the handler as defined in the multiproperties file.
+   * For the built-in handlers: Relative paths are resolved against the <code>baseTargetDir</code>. Since the output
+   * path in multiproperties files starts with the name of the Eclipse project, the built-in <code>DefaultHandler</code>
+   * also has a <code>removeFirstPathSegment</code> (default: <code>true</code>) to remove that name from the output
+   * path, so that the output path is relative to the project's base directory.
+   * <p>
+   * The built-in handlers also support placeholders in the output path. These can be used to generate the file name
+   * dynamically. Placeholder syntax is <code>#{name}</code>. Use <code>##</code> to insert a literal <code>#</code>.
+   * Supported placeholder names are:
+   * <ul>
+   * <li>path - Path to the input file, relative to the <code>baseSourceDir</code>, e.g.
+   * <code>src/main/resources/i18n</code></li>
+   * <li>filename - File name of the input file, e.g. <code>translations.multiproperties</code></li>
+   * <li>basename - Base name of the input file, the file name without the extension, e.g.
+   * <code>translations</code></li>
+   * <li>extension - Extension of the input file, without a leading dot, e.g. <code>multiproperties</code></li>
+   * <li>key - Column key for which to generate the output file, e.g. <code>de</code> or <code>en</code></li>
+   * </ul>
+   * For example, to generate <code>translations_de.properties</code>, <code>translations_en.properties</code> etc. from
+   * <code>translations.multiproperites</code>, you could use:
+   * 
+   * <pre>
+   * &lt;handlers&gt;
+   *   &lt;handler implementation=&quot;com.github.blutorange.multiproperties_maven_plugin.handler.JavaPropertiesHandler&quot;&gt;
+   *     &lt;configuration&gt;
+   *       &lt;outputPath&gt#{path}/#{basename}_#{key}.properties;&lt;/outputPath-&gt;
+   *       &lt;encoding&gt;UTF-8&lt;/encodingPath-&gt;
+   *     &lt;/configuration&gt;
+   *   &lt;/handler&gt;
+   * &lt;handlers&gt;
+   * </pre>
    * <p>
    * You need to specify the implementation class for each handler you wish to defined. For example, you could specify
    * the default handler like this:
@@ -93,10 +112,13 @@ public class GenerateMojo extends AbstractMojo {
    * <pre>
    * &lt;handlers&gt;
    *   &lt;handler implementation=&quot;com.github.blutorange.multiproperties_maven_plugin.handler.DefaultHandler&quot;&gt;
-   *     &lt;!-- Add properties for the handler --&gt;
+   *     &lt;!-- Configure properties for the handler --&gt;
    *   &lt;/handler&gt;
    * &lt;handlers&gt;
    * </pre>
+   * 
+   * The available properties depend on the implementation class, and are derived from the fields of the implementation
+   * POJO class.
    * <p>
    * Built-in handlers are:
    * <dd>
@@ -115,10 +137,20 @@ public class GenerateMojo extends AbstractMojo {
    * <p>
    * To use your own handler implementation, write an implementation of
    * <code>com.github.blutorange.multiproperties_maven_plugin.handler.Handler</code> and include the class in the plugin
-   * execution via <code>&lt;dependencies&gt;</code>.
+   * classpath via <code>&lt;dependencies&gt;</code>.
    */
   @Parameter(property = "handlers")
   private List<Handler> handlers;
+
+  @Parameter(defaultValue = "${project}", readonly = true)
+  private MavenProject project;
+
+  /**
+   * When set to <code>true</code>, skip execution of this plugin. Can also be set on the command line via
+   * <code>-Dskip.multiproperties</code>
+   */
+  @Parameter(property = "skip", defaultValue = "${skip.multiproperties}")
+  private boolean skip;
 
   /**
    * Whether to skip input files. Possible options are
@@ -226,15 +258,11 @@ public class GenerateMojo extends AbstractMojo {
     }
 
     if (baseSourceDir == null) {
-      baseDir = "";
+      baseSourceDir = "";
     }
 
     if (baseTargetDir == null) {
-      var parent = project;
-      while (parent.getParent() != null) {
-        parent = parent.getParent();
-      }
-      baseTargetDir = parent.getBasedir().getAbsolutePath();
+      baseTargetDir = "";
     }
   }
 
