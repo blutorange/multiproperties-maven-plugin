@@ -12,12 +12,21 @@
 	<build>
 		<plugins>
 			<plugin>
-				<!--				<groupId>@project.groupId@</groupId>-->
-				<!--				<artifactId>@project.artifactId@</artifactId>-->
-				<!--				<version>@project.version@</version>-->
-				<groupId>com.github.blutorange</groupId>
-				<artifactId>multiproperties-maven-plugin</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.10.1</version>
+				<configuration>
+					<release>11</release>
+					<debug>true</debug>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>@project.groupId@</groupId>
+				<artifactId>@project.artifactId@</artifactId>
+				<version>@project.version@</version>
+				<configuration>
+					<skipRunOnIncremental>true</skipRunOnIncremental>
+				</configuration>
 				<executions>
 					<execution>
 						<id>default-generate</id>
@@ -72,6 +81,24 @@
 							</handlers>
 						</configuration>
 					</execution>
+					<!--					<execution>-->
+					<!--						<id>handlers-custom</id>-->
+					<!--						<goals>-->
+					<!--							<goal>generate</goal>-->
+					<!--						</goals>-->
+					<!--						<phase>package</phase>-->
+					<!--						<configuration>-->
+					<!--							<baseDir>${project.basedir}</baseDir>-->
+					<!--							<baseSourceDir>src/main/handler-custom</baseSourceDir>-->
+					<!--							<baseTargetDir>target/generated-resources</baseTargetDir>-->
+					<!--							<handlers>-->
+					<!--								<handler implementation="org.CsvHandler">-->
+					<!--									<encoding>UTF-8</encoding>-->
+					<!--									<separator>;</separator>-->
+					<!--								</handler>-->
+					<!--							</handlers>-->
+					<!--						</configuration>-->
+					<!--					</execution>-->
 				</executions>
 			</plugin>
 		</plugins>
