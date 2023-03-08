@@ -14,10 +14,18 @@ import org.junit.jupiter.api.Test;
  */
 @SuppressWarnings("javadoc")
 public class JavaPropertiesWriterTest {
+  private static JavaPropertiesQuirkSettings quirksFull = JavaPropertiesQuirkSettings.builder() //
+      .skipCommentingMultiLines(true) //
+      .skipEscapingBackslash(true) //
+      .writeQuestionMarksInsteadOfProperlyEscapingChars(true) //
+      .build();
+  private static JavaPropertiesQuirkSettings quirksNone = JavaPropertiesQuirkSettings.builder() //
+      .build();
+
   @Test
   public void testWriteLineBreak() throws IOException {
     var writer = new StringWriter();
-    var props = new JavaPropertiesWriter(writer, StandardCharsets.UTF_8);
+    var props = new JavaPropertiesWriter(writer, StandardCharsets.UTF_8, quirksFull);
     props.writeLineBreak();
     writer.flush();
     assertEquals("\r\n", writer.toString());
@@ -25,70 +33,95 @@ public class JavaPropertiesWriterTest {
 
   @Test
   public void testWriteKeyValuePair() throws IOException {
-    assertWritesKeyValuePair("key=", "key", null);
-    assertWritesKeyValuePair("delimiterCharacters\\:\\=\\ =foobar", "delimiterCharacters:= ", "foobar");
-    assertWritesKeyValuePair("key=Line\\rbreak\\n\\\n\ttab\\tfeed\\f", "key", "Line\rbreak\ntab\tfeed\f");
-    assertWritesKeyValuePair("key=Line\\n\\\n\t\\  break", "key", "Line\n  break");
-    assertWritesKeyValuePair("key=c\\:\\\\wiki\\\\templates", "key", "c:\\wiki\\templates");
-    assertWritesKeyValuePair("key=\\u3053\\u3093\\u306B\\u3061\\u306F", "key", "こんにちは");
-    assertWritesKeyValuePair("key=\\u0001\\uF4AB", "key", "\u0001\uf4ab");
-    assertWritesKeyValuePair("key=\\  foobar  ", "key", "  foobar  ");
-    assertWritesKeyValuePair("key=\\u0015", "key", "\u0015");
-    assertWritesKeyValuePair("key=こんにちは", "key", "こんにちは", StandardCharsets.UTF_8);
-    assertWritesKeyValuePair("key=\\uD83D\\uDCAB", "key", "💫", StandardCharsets.ISO_8859_1);
-    assertWritesKeyValuePair("key=\\uD83D\\uDCAB", "key", "💫", StandardCharsets.US_ASCII);
-    assertWritesKeyValuePair("key=💫", "key", "💫", StandardCharsets.UTF_8);
-    assertWritesKeyValuePair("key=💫", "key", "💫", StandardCharsets.UTF_16);
-    assertWritesKeyValuePair("key=💫", "key", "💫", StandardCharsets.UTF_16BE);
-    assertWritesKeyValuePair("key=💫", "key", "💫", StandardCharsets.UTF_16LE);
-    assertWritesKeyValuePair("key=\\:\\!\\#\\=", "key", ":!#=", StandardCharsets.ISO_8859_1);
-    assertWritesKeyValuePair("key=:!#=", "key", ":!#=", StandardCharsets.UTF_8);
-    assertWritesKeyValuePair("key=[\\\\]", "key", "[\\]", StandardCharsets.ISO_8859_1);
-    assertWritesKeyValuePair("key=[\\\\]", "key", "[\\]", StandardCharsets.UTF_8);
+    assertWritesKeyValuePair("key=", "key", null, quirksFull);
+    assertWritesKeyValuePair("delimiterCharacters\\:\\=\\ =foobar", "delimiterCharacters:= ", "foobar", quirksFull);
+    assertWritesKeyValuePair("key=Line\\rbreak\\n\\\n\ttab\\tfeed\\f", "key", "Line\rbreak\ntab\tfeed\f", quirksFull);
+    assertWritesKeyValuePair("key=Line\\n\\\n\t\\  break", "key", "Line\n  break", quirksFull);
+    assertWritesKeyValuePair("key=c\\:\\\\wiki\\\\templates", "key", "c:\\wiki\\templates", quirksFull);
+    assertWritesKeyValuePair("key=c\\:\\\\wiki\\\\templates", "key", "c:\\wiki\\templates", quirksNone);
+    assertWritesKeyValuePair("key=\\u3053\\u3093\\u306B\\u3061\\u306F", "key", "こんにちは", quirksFull);
+    assertWritesKeyValuePair("key=\\u0001\\uF4AB", "key", "\u0001\uf4ab", quirksFull);
+    assertWritesKeyValuePair("key=\\  foobar  ", "key", "  foobar  ", quirksFull);
+    assertWritesKeyValuePair("key=\\u0015", "key", "\u0015", quirksFull);
+    assertWritesKeyValuePair("key=こんにちは", "key", "こんにちは", StandardCharsets.UTF_8, quirksFull);
+    assertWritesKeyValuePair("key=\\uD83D\\uDCAB", "key", "💫", StandardCharsets.ISO_8859_1, quirksFull);
+    assertWritesKeyValuePair("key=?", "key", "💫", StandardCharsets.US_ASCII, quirksFull);
+    assertWritesKeyValuePair("key=?????", "key", "こんにちは", StandardCharsets.US_ASCII, quirksFull);
+    assertWritesKeyValuePair("key=\\uD83D\\uDCAB", "key", "💫", StandardCharsets.US_ASCII, quirksNone);
+    assertWritesKeyValuePair("key=\\u3053\\u3093\\u306B\\u3061\\u306F", "key", "こんにちは", StandardCharsets.US_ASCII, quirksNone);
+    assertWritesKeyValuePair("key=💫", "key", "💫", StandardCharsets.UTF_8, quirksFull);
+    assertWritesKeyValuePair("key=💫", "key", "💫", StandardCharsets.UTF_16, quirksFull);
+    assertWritesKeyValuePair("key=💫", "key", "💫", StandardCharsets.UTF_16BE, quirksFull);
+    assertWritesKeyValuePair("key=💫", "key", "💫", StandardCharsets.UTF_16LE, quirksFull);
+    assertWritesKeyValuePair("key=\\:\\!\\#\\=", "key", ":!#=", StandardCharsets.ISO_8859_1, quirksFull);
+    assertWritesKeyValuePair("key=:!#=", "key", ":!#=", StandardCharsets.UTF_8, quirksFull);
+    assertWritesKeyValuePair("key=[\\\\]", "key", "[\\]", StandardCharsets.ISO_8859_1, quirksNone);
+    assertWritesKeyValuePair("key=[\\\\]", "key", "[\\]", StandardCharsets.UTF_8, quirksNone);
+    assertWritesKeyValuePair("key=[\\\\]", "key", "[\\]", StandardCharsets.ISO_8859_1, quirksFull);
+    assertWritesKeyValuePair("key=[\\]", "key", "[\\]", StandardCharsets.UTF_8, quirksFull);
+    assertWritesKeyValuePair("key=[\\]", "key", "[\\]", StandardCharsets.UTF_16, quirksFull);
+    assertWritesKeyValuePair("key=[\\]", "key", "[\\]", StandardCharsets.UTF_16BE, quirksFull);
+    assertWritesKeyValuePair("key=[\\]", "key", "[\\]", StandardCharsets.UTF_16LE, quirksFull);
+    assertWritesKeyValuePair("key=[\\]", "key", "[\\]", StandardCharsets.US_ASCII, quirksFull);
   }
 
   @Test
   public void testWriteKeyValuePairAsComment() throws IOException {
-    assertWritesKeyValuePairAsComment("#delimiterCharacters\\:\\=\\ =foobar", "delimiterCharacters:= ", "foobar");
-    assertWritesKeyValuePairAsComment("#key=Line\\rbreak\\n\\\n#\ttab\\tfeed\\f", "key", "Line\rbreak\ntab\tfeed\f");
-    assertWritesKeyValuePairAsComment("#key=c\\:\\\\wiki\\\\templates", "key", "c:\\wiki\\templates");
-    assertWritesKeyValuePairAsComment("#key=\\u3053\\u3093\\u306B\\u3061\\u306F", "key", "こんにちは");
-    assertWritesKeyValuePairAsComment("#key=\\u0001\\uF4AB", "key", "\u0001\uf4ab");
-    assertWritesKeyValuePairAsComment("#key=\\  foobar  ", "key", "  foobar  ");
-    assertWritesKeyValuePairAsComment("#key=foo\\n\\\n#\tbar", "key", "foo\nbar");
-    assertWritesKeyValuePairAsComment("#key=foo\\r\\n\\\n#\tbar", "key", "foo\r\nbar");
+    assertWritesKeyValuePairAsComment("#delimiterCharacters\\:\\=\\ =foobar", "delimiterCharacters:= ", "foobar", quirksNone);
+    assertWritesKeyValuePairAsComment("#key=Line\\rbreak\\n\\\n#\ttab\\tfeed\\f", "key", "Line\rbreak\ntab\tfeed\f", quirksNone);
+    assertWritesKeyValuePairAsComment("#key=c\\:\\\\wiki\\\\templates", "key", "c:\\wiki\\templates", quirksNone);
+    assertWritesKeyValuePairAsComment("#key=\\u3053\\u3093\\u306B\\u3061\\u306F", "key", "こんにちは", quirksNone);
+    assertWritesKeyValuePairAsComment("#key=\\u0001\\uF4AB", "key", "\u0001\uf4ab", quirksNone);
+    assertWritesKeyValuePairAsComment("#key=\\  foobar  ", "key", "  foobar  ", quirksNone);
+    assertWritesKeyValuePairAsComment("#key=foo\\n\\\n#\tbar", "key", "foo\nbar", quirksNone);
+    assertWritesKeyValuePairAsComment("#key=foo\\r\\n\\\n#\tbar", "key", "foo\r\nbar", quirksNone);
+
+    assertWritesKeyValuePairAsComment("#delimiterCharacters\\:\\=\\ =foobar", "delimiterCharacters:= ", "foobar", quirksFull);
+    assertWritesKeyValuePairAsComment("#key=Line\\rbreak\\n\\\n\ttab\\tfeed\\f", "key", "Line\rbreak\ntab\tfeed\f", quirksFull);
+    assertWritesKeyValuePairAsComment("#key=c\\:\\\\wiki\\\\templates", "key", "c:\\wiki\\templates", quirksFull);
+    assertWritesKeyValuePairAsComment("#key=c\\:\\\\wiki\\\\templates", "key", "c:\\wiki\\templates", quirksNone);
+    assertWritesKeyValuePairAsComment("#key=\\u3053\\u3093\\u306B\\u3061\\u306F", "key", "こんにちは", quirksFull);
+    assertWritesKeyValuePairAsComment("#key=\\u0001\\uF4AB", "key", "\u0001\uf4ab", quirksFull);
+    assertWritesKeyValuePairAsComment("#key=\\  foobar  ", "key", "  foobar  ", quirksFull);
+    assertWritesKeyValuePairAsComment("#key=foo\\n\\\n\tbar", "key", "foo\nbar", quirksFull);
+    assertWritesKeyValuePairAsComment("#key=foo\\r\\n\\\n\tbar", "key", "foo\r\nbar", quirksFull);
   }
 
   @Test
   public void testWriteComment() throws IOException {
-    assertWritesComment("# hello\r\n", "hello");
-    assertWritesComment("# a\r\n# hello\r\n# world\r\n# line3\r\n# \r\n# line4\r\n", "a\rhello\nworld\r\nline3\n\nline4");
+    assertWritesComment("# hello\r\n", "hello", quirksFull, false);
+    assertWritesComment("# a\r\n hello\r\n world\r\n line3\r\n \r\n line4\r\n", "a\rhello\nworld\r\nline3\n\nline4", quirksFull, false);
+    assertWritesComment("# a\r\n# hello\r\n# world\r\n# line3\r\n# \r\n# line4\r\n", "a\rhello\nworld\r\nline3\n\nline4", quirksNone, false);
+
+    assertWritesComment("# hello\r\n", "hello", quirksFull, true);
+    assertWritesComment("# a\r\n# hello\r\n# world\r\n# line3\r\n# \r\n# line4\r\n", "a\rhello\nworld\r\nline3\n\nline4", quirksFull, true);
+    assertWritesComment("# a\r\n# hello\r\n# world\r\n# line3\r\n# \r\n# line4\r\n", "a\rhello\nworld\r\nline3\n\nline4", quirksNone, true);
+}
+
+  private void assertWritesKeyValuePair(String expected, String key, String value, JavaPropertiesQuirkSettings quirks) throws IOException {
+    assertWritesKeyValuePair(expected, key, value, StandardCharsets.ISO_8859_1, quirks);
   }
 
-  private void assertWritesKeyValuePair(String expected, String key, String value) throws IOException {
-    assertWritesKeyValuePair(expected, key, value, StandardCharsets.ISO_8859_1);
-  }
-
-  private void assertWritesKeyValuePair(String expected, String key, String value, Charset charset) throws IOException {
+  private void assertWritesKeyValuePair(String expected, String key, String value, Charset charset, JavaPropertiesQuirkSettings quirks) throws IOException {
     var writer = new StringWriter();
-    var props = new JavaPropertiesWriter(writer, charset);
+    var props = new JavaPropertiesWriter(writer, charset, quirks);
     props.writeKeyValuePair(key, value);
     writer.flush();
     assertEquals(expected + "\r\n", writer.toString());
   }
 
-  private void assertWritesKeyValuePairAsComment(String expected, String key, String value) throws IOException {
+  private void assertWritesKeyValuePairAsComment(String expected, String key, String value, JavaPropertiesQuirkSettings quirks) throws IOException {
     var writer = new StringWriter();
-    var props = new JavaPropertiesWriter(writer, StandardCharsets.ISO_8859_1);
+    var props = new JavaPropertiesWriter(writer, StandardCharsets.ISO_8859_1, quirks);
     props.writeKeyValuePairAsComment(key, value);
     writer.flush();
     assertEquals(expected + "\r\n", writer.toString());
   }
 
-  private void assertWritesComment(String expected, String comment) throws IOException {
+  private void assertWritesComment(String expected, String comment, JavaPropertiesQuirkSettings quirks, boolean forceCommentMultilines) throws IOException {
     var writer = new StringWriter();
-    var props = new JavaPropertiesWriter(writer, StandardCharsets.ISO_8859_1);
-    props.writeComment(comment, true);
+    var props = new JavaPropertiesWriter(writer, StandardCharsets.ISO_8859_1, quirks);
+    props.writeComment(comment, true, forceCommentMultilines);
     writer.flush();
     var actual = writer.toString();
     assertEquals(expected, actual);

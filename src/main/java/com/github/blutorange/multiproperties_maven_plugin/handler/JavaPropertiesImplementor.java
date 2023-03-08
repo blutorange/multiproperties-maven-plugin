@@ -61,7 +61,7 @@ public final class JavaPropertiesImplementor implements HandlerImplementor<JavaP
   }
 
   private void writeComment(JavaPropertiesWriter propertiesWriter, Comment comment) throws IOException {
-    propertiesWriter.writeComment(comment.getValue(), false);
+    propertiesWriter.writeComment(comment.getValue(), false, false);
   }
 
   private void writeEmpty(JavaPropertiesWriter propertiesWriter, Empty item) throws IOException {
@@ -73,10 +73,15 @@ public final class JavaPropertiesImplementor implements HandlerImplementor<JavaP
     final var encoding = Charset.forName(config.getEncoding());
     final var columnKey = ctx.getColumnKey();
 
-    final var propertiesWriter = new JavaPropertiesWriter(writer, encoding);
+    final var quirks = JavaPropertiesQuirkSettings.builder() //
+        .skipCommentingMultiLines(true) //
+        .skipEscapingBackslash(true) //
+        .writeQuestionMarksInsteadOfProperlyEscapingChars(true) //
+        .build();
+    final var propertiesWriter = new JavaPropertiesWriter(writer, encoding, quirks);
 
     if (config.isInsertFileDescriptionAsComment() && isNotEmpty(ctx.getFileDescription())) {
-      propertiesWriter.writeComment(ctx.getFileDescription(), true);
+      propertiesWriter.writeComment(ctx.getFileDescription(), true, true);
       propertiesWriter.writeLineBreak();
     }
 

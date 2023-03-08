@@ -15,45 +15,25 @@ final class JavaPropertiesWriter {
 
   private final CharsetEncoder encoder;
 
+  private final JavaPropertiesQuirkSettings quirks;
+
   private final Writer writer;
 
-  public JavaPropertiesWriter(Writer writer, Charset charset) {
+  public JavaPropertiesWriter(Writer writer, Charset charset, JavaPropertiesQuirkSettings quirks) {
     this.writer = writer;
     this.encoder = charset.newEncoder();
+    this.quirks = quirks;
   }
 
-  public void writeComment(String value, boolean whitespace) throws IOException {
-    writeComment(value, whitespace, LINE_SEPARATOR);
+  public void writeComment(String value, boolean whitespace, boolean forceCommentMultilines) throws IOException {
+    writeComment(value, whitespace, LINE_SEPARATOR, forceCommentMultilines);
   }
 
   public void writeKeyValuePair(String key, String value) throws IOException {
     writeKeyValuePair(writer, encoder, key, value);
   }
 
-  public void writeKeyValuePairAsComment(String key, String value) throws IOException {
-    final var writer = new StringWriter();
-    writeKeyValuePair(writer, encoder, key, value);
-    writeComment(writer.toString(), false, "\n");
-  }
-
-  public void writeLineBreak() throws IOException {
-    writer.write(LINE_SEPARATOR);
-  }
-
-  private void writeComment(String value, boolean whitespace, String lineSeparator) throws IOException {
-    final var lines = value.split("\\r\\n|\\n|\\r");
-    for (var index = 0; index < lines.length; index += 1) {
-      final var line = lines[index];
-      writer.write("#");
-      if (whitespace) {
-        writer.write(" ");
-      }
-      writer.write(line);
-      writer.write(index == lines.length - 1 ? LINE_SEPARATOR : lineSeparator);
-    }
-  }
-
-  public static void writeKeyValuePair(Writer writer, CharsetEncoder charset, String key, String value) throws IOException {
+  public void writeKeyValuePair(Writer writer, CharsetEncoder charset, String key, String value) throws IOException {
     writer.write(escapeKey(key));
     writer.write("=");
     if (value != null) {
@@ -62,11 +42,21 @@ final class JavaPropertiesWriter {
     writer.write(LINE_SEPARATOR);
   }
 
-  private static String escapeKey(String name) {
+  public void writeKeyValuePairAsComment(String key, String value) throws IOException {
+    final var writer = new StringWriter();
+    writeKeyValuePair(writer, encoder, key, value);
+    writeComment(writer.toString(), false, "\n", false);
+  }
+
+  public void writeLineBreak() throws IOException {
+    writer.write(LINE_SEPARATOR);
+  }
+
+  private String escapeKey(String name) {
     return name.replaceAll("([=: \\t\\f])", "\\\\$1");
   }
 
-  private static String escapeValue(String value, CharsetEncoder encoder) {
+  private String escapeValue(String value, CharsetEncoder encoder) {
     var nonWhitespace = false;
     final var it = value.codePoints().iterator();
     final var sb = new StringBuilder();
@@ -83,7 +73,7 @@ final class JavaPropertiesWriter {
           }
           break;
         case '\\':
-          sb.append("\\\\");
+          sb.append(quirks.skipEscapingBackslash() && isQuestionMarkCharset(encoder.charset()) ? "\\" : "\\\\");
           nonWhitespace = true;
           break;
         case '\r':
@@ -102,10 +92,15 @@ final class JavaPropertiesWriter {
           break;
         default:
           nonWhitespace = true;
+          final boolean justWriteQuestionMark = quirks.writeQuestionMarksInsteadOfProperlyEscapingChars() //
+              && encoder.charset().equals(StandardCharsets.US_ASCII) && c >= 0x80;
           final var alwaysEscape = encoder.charset().equals(StandardCharsets.ISO_8859_1) //
               ? c >= 0x7f || c == '!' || c == '#' || c == ':' || c == '=' //
               : false;
-          if (c >= 32 && !alwaysEscape && encoder.canEncode(Character.toString(c))) {
+          if (justWriteQuestionMark) {
+            sb.append("?");
+          }
+          else if (c >= 32 && !alwaysEscape && encoder.canEncode(Character.toString(c))) {
             sb.appendCodePoint(c);
           }
           else {
@@ -130,5 +125,28 @@ final class JavaPropertiesWriter {
     }
 
     return sb.toString();
+  }
+
+  private boolean isQuestionMarkCharset(Charset charset) {
+    return encoder.charset().equals(StandardCharsets.US_ASCII) //
+        || encoder.charset().equals(StandardCharsets.UTF_16) //
+        || encoder.charset().equals(StandardCharsets.UTF_16BE)
+        || encoder.charset().equals(StandardCharsets.UTF_16LE) //
+        || encoder.charset().equals(StandardCharsets.UTF_8);
+  }
+
+  private void writeComment(String value, boolean whitespace, String lineSeparator, boolean forceCommentMultilines) throws IOException {
+    final var lines = value.split("\\r\\n|\\n|\\r");
+    for (var index = 0; index < lines.length; index += 1) {
+      final var line = lines[index];
+      if (index == 0 || !quirks.skipCommentingMultiLines() || forceCommentMultilines) {
+        writer.write("#");
+      }
+      if (whitespace) {
+        writer.write(" ");
+      }
+      writer.write(line);
+      writer.write(index == lines.length - 1 ? LINE_SEPARATOR : lineSeparator);
+    }
   }
 }

@@ -38,13 +38,13 @@ Caveats:
 
 * The `Text File Handler` is not supported as of now. The Eclipse add-on seems to be broken currently and does not generate the text files (or rather, the generated files only contain `nullnullnull...`). If anybody needs this and knows the format of these generated text files, open an issue and let me know.
 
-Other than that, it should generate the same output as the Eclipse addon, with a few intentional exceptions:
+Other than that, it should generate the same output as the Eclipse addon, including the following "quirks":
 
-* `Write disabled properties as comment` is turned on and a multiline property is disabled, the Eclipse addon
-  fails to comment every line other than the first line of the multiline property, which is a bug. This plugin adds
+* When `Write disabled properties as comment` is turned on and a multiline property is disabled, the Eclipse addon
+  fails to properly comment lines other than the first line of the multiline property, which is a bug. This plugin adds
   the `#` before each line.
 * Backslashes `\` in the value of a property are properly escaped as two backslashes `\\`. The Eclipse add-on fails to
-  do so when the file encoding is UTF8 or UTF16.
+  do so when the file encoding is not ISO_8859_1.
 * Characters not representable in US-ASCII are escaped when US-ASCII is selected as the encoding. The Eclipse add-on fails
   to escape such characters for US-ASCII, resulting in question marks `?` being written to the properties file.
 
@@ -83,3 +83,8 @@ multiproperties file. In that case, you can set the handler to `none` and add a 
 </plugin>
 ```
 
+## Testing
+
+To run IT tests with debugging:
+
+> mvn verify -P run-its -Dinvoker.mavenOpts="-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9001"
