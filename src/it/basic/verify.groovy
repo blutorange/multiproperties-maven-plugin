@@ -1,4 +1,4 @@
-def assertResult = { expectedDir,actualDir,name ->
+def assertResult = { expectedDir, actualDir,name ->
   File actualDe = new File( basedir, "${actualDir}/${name}_de.properties" );
   File actualEn = new File( basedir, "${actualDir}/${name}_en.properties" );
   
@@ -13,15 +13,15 @@ def assertResult = { expectedDir,actualDir,name ->
 }
 
 def assertResultDefault = { name ->
-  assertResult("src/main/resources/i18n", "expected", name);
+  assertResult("expected", "src/main/resources/i18n", name);
 }
 
 def assertResultCustom = { name ->
-  assertResult("custom/output/maven-properties-plugin-basic/custom/output", "custom/expected", name);
+  assertResult("custom/expected", "custom/output/maven-properties-plugin-basic/custom/output", name);
 }
 
 def assertResultHandlersBuiltin = { name ->
-  assertResult("target/generated-resources/input/dir-handler-builtin", "src/main/handler-builtin/expected", name);
+  assertResult("src/main/handler-builtin/expected", "target/generated-resources/input/dir-handler-builtin", name);
 }
 
 assertResultDefault.call("localization");
@@ -37,6 +37,7 @@ assertResultDefault.call("specialCharsUtf8");
 assertResultDefault.call("specialCharsUtf16");
 assertResultDefault.call("specialCharsUtf16Be");
 assertResultDefault.call("specialCharsUtf16Le");
+assertResultDefault.call("singleAndMultiline");
 
 assertResultCustom.call("lang");
 assert new File(basedir, "custom/output/maven-properties-plugin-basic/custom/output/lang_de.properties").isFile();

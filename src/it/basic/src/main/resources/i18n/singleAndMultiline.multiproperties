@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MultiProperties xmlns="hu.skzs.multiproperties">
+    <Version>1.2</Version>
+    <Name>Localized strings</Name>
+    <Description>single
+multi</Description>
+    <Handler>Java Properties Handler</Handler>
+    <Columns>
+        <Key>
+            <Width>200</Width>
+        </Key>
+        <Column>
+            <Name>de</Name>
+            <Description></Description>
+            <Width>150</Width>
+            <HandlerConfiguration>/maven-properties-plugin-basic/src/main/resources/i18n/singleAndMultiline_de.properties|false|false|false|false|ISO-8859-1</HandlerConfiguration>
+        </Column>
+        <Column>
+            <Name>en</Name>
+            <Description></Description>
+            <Width>597</Width>
+            <HandlerConfiguration>/maven-properties-plugin-basic/src/main/resources/i18n/singleAndMultiline_en.properties|false|false|false|false|ISO-8859-1</HandlerConfiguration>
+        </Column>
+    </Columns>
+    <Records>
+        <Comment>
+            <Value>Single line</Value>
+        </Comment>
+        <Property>
+            <Name>single line with single line</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>false</MultiLine>
+            <Value disabled="false">foobar-de</Value>
+            <Value disabled="false">foobar-en</Value>
+        </Property>
+        <Property>
+            <Name>single line with multi line</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>false</MultiLine>
+            <Value disabled="false">foobar-de1
+foobar-de2</Value>
+            <Value disabled="false">foobar-en-1
+foobar-en-2</Value>
+        </Property>
+        <Property>
+            <Name>single line with trailing</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>false</MultiLine>
+            <Value disabled="false">foobar-de1  
+  </Value>
+            <Value disabled="false">foobar-en-1  
+  </Value>
+        </Property>
+        <Comment>
+            <Value>Multi line</Value>
+        </Comment>
+        <Property>
+            <Name>multi line with single line</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">foobar-de-1</Value>
+            <Value disabled="false">foobar-en-1</Value>
+        </Property>
+        <Property>
+            <Name>multi line with multi line</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">foobar-de-1
+foobar-de-2</Value>
+            <Value disabled="false">foobar-en-1
+foobar-en-2</Value>
+        </Property>
+    </Records>
+</MultiProperties>
