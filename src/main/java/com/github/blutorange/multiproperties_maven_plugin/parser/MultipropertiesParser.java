@@ -1,6 +1,6 @@
 package com.github.blutorange.multiproperties_maven_plugin.parser;
 
-import static com.github.blutorange.multiproperties_maven_plugin.common.StringHelper.defaultIfEmpty;
+import static org.apache.commons.lang3.StringUtils.defaultIfEmpty;
 
 import java.io.IOException;
 import java.nio.file.Path;

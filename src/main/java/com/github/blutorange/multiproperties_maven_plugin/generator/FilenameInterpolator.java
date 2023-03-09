@@ -1,5 +1,7 @@
 package com.github.blutorange.multiproperties_maven_plugin.generator;
 
+import static org.apache.commons.lang3.StringUtils.removeStart;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -45,7 +47,7 @@ final class FilenameInterpolator {
     }
     final var substitutor = new StringSubstitutor(data, prefix, suffix, escapeChar);
     final var interpolatedFilename = substitutor.replace(pattern);
-    final var interpolatedFile = targetDirectory.resolve(interpolatedFilename);
+    final var interpolatedFile = targetDirectory.resolve(removeStart(interpolatedFilename, "/"));
     return interpolatedFile;
   }
 }

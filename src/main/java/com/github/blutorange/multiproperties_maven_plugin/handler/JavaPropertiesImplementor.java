@@ -2,12 +2,12 @@ package com.github.blutorange.multiproperties_maven_plugin.handler;
 
 import static com.github.blutorange.multiproperties_maven_plugin.common.FileHelper.createDirectoriesIfMissing;
 import static com.github.blutorange.multiproperties_maven_plugin.common.FileHelper.removeFirstPathSegmentFromString;
-import static com.github.blutorange.multiproperties_maven_plugin.common.StringHelper.isNotEmpty;
-import static com.github.blutorange.multiproperties_maven_plugin.common.StringHelper.removeStart;
 import static com.github.blutorange.multiproperties_maven_plugin.handler.HandlerConfigurationParser.javaProperties;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static java.nio.file.StandardOpenOption.WRITE;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.removeStart;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;

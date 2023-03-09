@@ -1,6 +1,6 @@
 package com.github.blutorange.multiproperties_maven_plugin.handler;
 
-import static com.github.blutorange.multiproperties_maven_plugin.common.StringHelper.defaultIfEmpty;
+import static org.apache.commons.lang3.StringUtils.defaultIfEmpty;
 
 import java.nio.charset.StandardCharsets;
 
@@ -45,6 +45,19 @@ final class HandlerConfigurationParser {
   public static NoneHandler none(String value) {
     value = defaultIfEmpty(value, "");
     final var config = new NoneHandler();
+    return config;
+  }
+
+  public static SimpleJavaPropertiesHandler simpleJavaProperties(String value) {
+    value = defaultIfEmpty(value, "");
+
+    final var config = new SimpleJavaPropertiesHandler();
+    final var parts = value.split("\\|");
+    config.setOutputPath(getString(parts, 0));
+    config.setInsertFileDescriptionAsComment(getBoolean(parts, 1));
+    config.setDisableDefaultValues(getBoolean(parts, 4));
+    config.setEncoding(getString(parts, 5, StandardCharsets.ISO_8859_1.name()));
+
     return config;
   }
 

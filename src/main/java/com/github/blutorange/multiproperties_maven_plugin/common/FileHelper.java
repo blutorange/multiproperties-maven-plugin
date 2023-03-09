@@ -1,11 +1,11 @@
 package com.github.blutorange.multiproperties_maven_plugin.common;
 
 import static com.github.blutorange.multiproperties_maven_plugin.common.CollectionHelper.isCollectionEmpty;
-import static com.github.blutorange.multiproperties_maven_plugin.common.StringHelper.isEmpty;
-import static com.github.blutorange.multiproperties_maven_plugin.common.StringHelper.isNotEmpty;
-import static com.github.blutorange.multiproperties_maven_plugin.common.StringHelper.removeStart;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.removeStart;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,6 +19,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
@@ -143,7 +144,7 @@ public final class FileHelper {
    */
   public static boolean shouldSkipOutput(Path sourceFile, Path targetFile, SkipOutputMode skipOutputMode) throws IOException {
     final boolean ouptutFilesExist = Files.exists(targetFile);
-    switch (ObjectHelper.defaultIfNull(skipOutputMode, SkipOutputMode.NEWER)) {
+    switch (ObjectUtils.defaultIfNull(skipOutputMode, SkipOutputMode.NEWER)) {
       case NEVER:
         return false;
       case NEWER:

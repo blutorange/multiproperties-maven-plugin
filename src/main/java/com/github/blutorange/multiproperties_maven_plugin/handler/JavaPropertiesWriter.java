@@ -1,6 +1,5 @@
 package com.github.blutorange.multiproperties_maven_plugin.handler;
-
-import static com.github.blutorange.multiproperties_maven_plugin.common.StringHelper.padLeft;
+import static org.apache.commons.lang3.StringUtils.leftPad;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -119,13 +118,13 @@ final class JavaPropertiesWriter {
             else {
               if (c <= 0xFFFF) {
                 sb.append("\\u");
-                sb.append(padLeft(Integer.toString(c, 16).toUpperCase(Locale.ROOT), 4, '0'));
+                sb.append(leftPad(Integer.toString(c, 16).toUpperCase(Locale.ROOT), 4, '0'));
               }
               else {
                 sb.append("\\u");
-                sb.append(padLeft(Integer.toString(Character.highSurrogate(c), 16).toUpperCase(Locale.ROOT), 4, '0'));
+                sb.append(leftPad(Integer.toString(Character.highSurrogate(c), 16).toUpperCase(Locale.ROOT), 4, '0'));
                 sb.append("\\u");
-                sb.append(padLeft(Integer.toString(Character.lowSurrogate(c), 16).toUpperCase(Locale.ROOT), 4, '0'));
+                sb.append(leftPad(Integer.toString(Character.lowSurrogate(c), 16).toUpperCase(Locale.ROOT), 4, '0'));
               }
             }
           }

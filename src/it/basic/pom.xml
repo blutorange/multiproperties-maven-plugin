@@ -81,6 +81,60 @@
 							</handlers>
 						</configuration>
 					</execution>
+					<execution>
+						<id>handlers-simple</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<baseDir>${project.basedir}</baseDir>
+							<baseSourceDir>src/main/handler-simple/input</baseSourceDir>
+							<baseTargetDir>target/generated-resources/handler-simple/output</baseTargetDir>
+							<handlers>
+								<handler implementation="com.github.blutorange.multiproperties_maven_plugin.handler.SimpleJavaPropertiesHandler">
+									<outputPath>#{path}/#{basename}_#{key}.properties</outputPath>
+									<encoding>UTF-8</encoding>
+									<insertFileDescriptionAsComment>true</insertFileDescriptionAsComment>
+								</handler>
+							</handlers>
+						</configuration>
+					</execution>
+					<execution>
+						<id>handlers-simple-usascii</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<baseDir>${project.basedir}</baseDir>
+							<baseSourceDir>src/main/handler-simple-usascii/input</baseSourceDir>
+							<baseTargetDir>target/generated-resources/handler-simple-usascii/output</baseTargetDir>
+							<handlers>
+								<handler implementation="com.github.blutorange.multiproperties_maven_plugin.handler.SimpleJavaPropertiesHandler">
+									<outputPath>#{path}/#{basename}_#{key}.properties</outputPath>
+									<encoding>US-ASCII</encoding>
+									<insertFileDescriptionAsComment>true</insertFileDescriptionAsComment>
+								</handler>
+							</handlers>
+						</configuration>
+					</execution>
+					<execution>
+						<id>handlers-simple-utf16be</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<baseDir>${project.basedir}</baseDir>
+							<baseSourceDir>src/main/handler-simple-utf16be/input</baseSourceDir>
+							<baseTargetDir>target/generated-resources/handler-simple-utf16be/output</baseTargetDir>
+							<handlers>
+								<handler implementation="com.github.blutorange.multiproperties_maven_plugin.handler.SimpleJavaPropertiesHandler">
+									<outputPath>#{path}/#{basename}_#{key}.properties</outputPath>
+									<encoding>UTF-16BE</encoding>
+									<insertFileDescriptionAsComment>true</insertFileDescriptionAsComment>
+								</handler>
+							</handlers>
+						</configuration>
+					</execution>
 					<!--					<execution>-->
 					<!--						<id>handlers-custom</id>-->
 					<!--						<goals>-->

@@ -38,7 +38,8 @@ Caveats:
 
 * The `Text File Handler` is not supported as of now. The Eclipse add-on seems to be broken currently and does not generate the text files (or rather, the generated files only contain `nullnullnull...`). If anybody needs this and knows the format of these generated text files, open an issue and let me know.
 
-Other than that, it should generate the same output as the Eclipse addon, including the following "quirks":
+Other than that, it should generate the same output as the Eclipse addon, including the following "quirks" (see the
+Simple properties handler below if you don't care about producing exactly the same output as the Eclipse add-on):
 
 * When `Write disabled properties as comment` is turned on and a multiline property is disabled, the Eclipse addon
   fails to properly comment lines other than the first line of the multiline property, which is a bug. This plugin adds
@@ -47,6 +48,7 @@ Other than that, it should generate the same output as the Eclipse addon, includ
   do so when the file encoding is not ISO_8859_1.
 * Characters not representable in US-ASCII are escaped when US-ASCII is selected as the encoding. The Eclipse add-on fails
   to escape such characters for US-ASCII, resulting in question marks `?` being written to the properties file.
+
 
 Note that the setting `Insert description of column in the beginning as comment` currently does not do what it advertises, it only add a line break at the beginning of the file. This plugin intentionally reproduces this behavior as I would not consider that to be
 a major bug and it does not result in broken properties files or missing data.
@@ -63,7 +65,7 @@ multiproperties file. In that case, you can set the handler to `none` and add a 
 	<version>${multiproperties-maven-plugin.version}</version>
 	<executions>
 		<execution>
-			<id>handlers-builtin</id>
+			<id>default</id>
 			<goals>
 				<goal>generate</goal>
 			</goals>
@@ -75,6 +77,41 @@ multiproperties file. In that case, you can set the handler to `none` and add a 
 					<handler implementation="com.github.blutorange.multiproperties_maven_plugin.handler.JavaPropertiesHandler">
 						<outputPath>#{path}/#{basename}_#{key}.properties</outputPath>
 						<encoding>UTF-8</encoding>
+					</handler>
+				</handlers>
+			</configuration>
+		</execution>
+	</executions>
+</plugin>
+```
+
+## Simple properties handler
+
+If you do not care about exactly the same output as the Eclipse add-on, there's also a simple properties handler that
+uses the `Properties` class to write a Java *.properties file, which handles escaping correctly. It does not support
+comment entries (I also see no need for comments in generated  files). This is especially useful if you only use
+the Eclipse add-on to edit multiproperties files, but do not generate any output with the Eclipse add-on (i.e. if you
+set the handler to `None`). You can use it like this:
+
+```xml
+<plugin>
+	<groupId>com.github.blutorange</groupId>
+	<artifactId>multiproperties-maven-plugin</artifactId>
+	<version>${multiproperties-maven-plugin.version}</version>
+	<executions>
+		<execution>
+			<id>default</id>
+			<goals>
+				<goal>generate</goal>
+			</goals>
+			<configuration>
+				<baseDir>${project.basedir}</baseDir>
+				<baseSourceDir>src/main/resources</baseSourceDir>
+				<baseTargetDir>target/generated-resources</baseTargetDir>
+				<handlers>
+					<handler implementation="com.github.blutorange.multiproperties_maven_plugin.handler.SimpleJavaPropertiesHandler">
+						<outputPath>#{path}/#{basename}_#{key}.properties</outputPath>
+						<encoding>US-ASCII</encoding>
 					</handler>
 				</handlers>
 			</configuration>
