@@ -12,14 +12,14 @@ multi</Description>
         <Column>
             <Name>de</Name>
             <Description></Description>
-            <Width>150</Width>
-            <HandlerConfiguration>/maven-properties-plugin-basic/src/main/resources/i18n/singleAndMultiline_de.properties|false|false|false|false|ISO-8859-1</HandlerConfiguration>
+            <Width>747</Width>
+            <HandlerConfiguration>/maven-properties-plugin-basic/src/main/resources/i18n/singleAndMultiline_de.properties|false|false|true|false|ISO-8859-1</HandlerConfiguration>
         </Column>
         <Column>
             <Name>en</Name>
             <Description></Description>
             <Width>597</Width>
-            <HandlerConfiguration>/maven-properties-plugin-basic/src/main/resources/i18n/singleAndMultiline_en.properties|false|false|false|false|ISO-8859-1</HandlerConfiguration>
+            <HandlerConfiguration>/maven-properties-plugin-basic/src/main/resources/i18n/singleAndMultiline_en.properties|false|false|true|false|ISO-8859-1</HandlerConfiguration>
         </Column>
     </Columns>
     <Records>
@@ -69,6 +69,291 @@ foobar-en-2</Value>
 foobar-de-2</Value>
             <Value disabled="false">foobar-en-1
 foobar-en-2</Value>
+        </Property>
+        <Comment>
+            <Value>Special</Value>
+        </Comment>
+        <Property>
+            <Name>leading1</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>false</MultiLine>
+            <Value disabled="false">
+Email server</Value>
+            <Value disabled="false">
+Email server</Value>
+        </Property>
+        <Property>
+            <Name>leading2</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">
+Email server</Value>
+            <Value disabled="false">
+Email server</Value>
+        </Property>
+        <Property>
+            <Name>leading3</Name>
+            <Disabled>true</Disabled>
+            <MultiLine>false</MultiLine>
+            <Value disabled="false">
+Email server</Value>
+            <Value disabled="false">
+Email server</Value>
+        </Property>
+        <Property>
+            <Name>leading4</Name>
+            <Disabled>true</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">
+Email server</Value>
+            <Value disabled="false">
+Email server</Value>
+        </Property>
+        <Property>
+            <Name>trailing1</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>false</MultiLine>
+            <Value disabled="false">Email server
+</Value>
+            <Value disabled="false">Email server
+</Value>
+        </Property>
+        <Property>
+            <Name>trailing2</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">Email server
+</Value>
+            <Value disabled="false">Email server
+</Value>
+        </Property>
+        <Property>
+            <Name>trailing3</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>false</MultiLine>
+            <Value disabled="false">Email server
+	</Value>
+            <Value disabled="false">Email server
+	</Value>
+        </Property>
+        <Property>
+            <Name>trailing3</Name>
+            <Disabled>true</Disabled>
+            <MultiLine>false</MultiLine>
+            <Value disabled="false">Email server
+	</Value>
+            <Value disabled="false">Email server
+	</Value>
+        </Property>
+        <Property>
+            <Name>trailing4</Name>
+            <Disabled>true</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">Email server
+	</Value>
+            <Value disabled="false">Email server
+	</Value>
+        </Property>
+        <Property>
+            <Name>windowsLineBreaks</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">&lt;p&gt;Guten Tag {0},&lt;/p&gt;&#13;
+&lt;p&gt;Wir haben festgestellt, dass Sie sich kürzlich mit &lt;b&gt;{1}&lt;/b&gt; bei &lt;b&gt;uns&lt;/b&gt; angemeldet haben.&lt;/p&gt;&#13;
+&lt;div style="text-align:center;width: 100%;margin:25px;"&gt;&#13;
+  &lt;div style="text-align:center;max-width:calc(100% - 80px);padding:15px;background:#efefef;border-radius:5px;"&gt;&#13;
+    &lt;table&gt;&#13;
+      &lt;tr style="text-align: left;"&gt;&#13;
+        &lt;td style="padding: 5px;"&gt;&lt;b&gt;Login-Methode&lt;/b&gt;&lt;/td&gt;&#13;
+        &lt;td style="padding: 5px;"&gt;{1}&lt;/td&gt;&#13;
+      &lt;/tr&gt;&#13;
+      &lt;tr style="text-align: left;"&gt;&#13;
+        &lt;td style="padding: 5px;"&gt;&lt;b&gt;E-Mail-Adresse&lt;/b&gt;&lt;/td&gt;&#13;
+        &lt;td style="padding: 5px;"&gt;{2}&lt;/td&gt;&#13;
+      &lt;/tr&gt;&#13;
+      &lt;tr style="text-align: left;"&gt;&#13;
+        &lt;td style="padding: 5px;"&gt;&lt;b&gt;Uhrzeit&lt;/b&gt;&lt;/td&gt;&#13;
+        &lt;td style="padding: 5px;"&gt;{3}&lt;/td&gt;&#13;
+      &lt;/tr&gt;&#13;
+      &lt;tr style="text-align: left;"&gt;&#13;
+        &lt;td style="padding: 5px;"&gt;&lt;b&gt;IP&lt;/b&gt;&lt;/td&gt;&#13;
+        &lt;td style="padding: 5px;"&gt;{4}&lt;/td&gt;&#13;
+      &lt;/tr&gt;&#13;
+      &lt;tr style="text-align: left;"&gt;&#13;
+        &lt;td style="padding: 5px;"&gt;&lt;b&gt;Gerät&lt;/b&gt;&lt;/td&gt;&#13;
+        &lt;td style="padding: 5px;"&gt;{5}&lt;/td&gt;&#13;
+      &lt;/tr&gt;&#13;
+    &lt;/table&gt;&#13;
+  &lt;/div&gt;&#13;
+&lt;/div&gt;&#13;
+&lt;p&gt;Wenn dies nicht von Ihnen veranlasst wurde, entfernen Sie die Verknüpfung des {1}-Kontos mit einem Klick auf den folgenden Link: &lt;a href="{6}" target="_blank"&gt;{6}&lt;/a&gt;. Sie können das Konto innerhalb der nächsten {7} Tage aus Ihrem &lt;b&gt;APP&lt;/b&gt;-Profil entfernen.&lt;/p&gt;&#13;
+&lt;p&gt;Alternativ können Sie sich auch in Ihrem &lt;b&gt;APP&lt;/b&gt;-Profil anmelden und die Kontoverknüpfung über &lt;a href="{8}" target="_blank"&gt;Mein Profil&lt;/a&gt; entfernen.&lt;/p&gt;&#13;
+</Value>
+            <Value disabled="false">&lt;p&gt;Hello {0},&lt;/p&gt;&#13;
+&lt;p&gt;We noticed that you recently signed in to &lt;b&gt;OUR APP&lt;/b&gt; using {1}.&lt;/p&gt;&#13;
+&lt;div style="text-align:center;width: 100%;margin:25px;"&gt;&#13;
+  &lt;div style="text-align:center;max-width:calc(100% - 80px);padding:15px;background:#efefef;border-radius:5px;"&gt;&#13;
+    &lt;table&gt;&#13;
+      &lt;tr style="text-align: left;"&gt;&#13;
+        &lt;td style="padding: 5px;"&gt;&lt;b&gt;Login method&lt;/b&gt;&lt;/td&gt;&#13;
+        &lt;td style="padding: 5px;"&gt;{1}&lt;/td&gt;&#13;
+      &lt;/tr&gt;&#13;
+      &lt;tr style="text-align: left;"&gt;&#13;
+        &lt;td style="padding: 5px;"&gt;&lt;b&gt;Email address&lt;/b&gt;&lt;/td&gt;&#13;
+        &lt;td style="padding: 5px;"&gt;{2}&lt;/td&gt;&#13;
+      &lt;/tr&gt;&#13;
+      &lt;tr style="text-align: left;"&gt;&#13;
+        &lt;td style="padding: 5px;"&gt;&lt;b&gt;Time&lt;/b&gt;&lt;/td&gt;&#13;
+        &lt;td style="padding: 5px;"&gt;{3}&lt;/td&gt;&#13;
+      &lt;/tr&gt;&#13;
+      &lt;tr style="text-align: left;"&gt;&#13;
+        &lt;td style="padding: 5px;"&gt;&lt;b&gt;IP&lt;/b&gt;&lt;/td&gt;&#13;
+        &lt;td style="padding: 5px;"&gt;{4}&lt;/td&gt;&#13;
+      &lt;/tr&gt;&#13;
+      &lt;tr style="text-align: left;"&gt;&#13;
+        &lt;td style="padding: 5px;"&gt;&lt;b&gt;Device&lt;/b&gt;&lt;/td&gt;&#13;
+        &lt;td style="padding: 5px;"&gt;{5}&lt;/td&gt;&#13;
+      &lt;/tr&gt;&#13;
+    &lt;/table&gt;&#13;
+  &lt;/div&gt;&#13;
+&lt;/div&gt;&#13;
+&lt;p&gt;If this has not been initiated by you, remove the {1} account connection by clicking on the following link: &lt;a href="{6}" target="_blank"&gt;{6}&lt;/a&gt;. You can remove the account from your &lt;b&gt;APP&lt;/b&gt; profile within the next {7} days.&lt;/p&gt;&#13;
+&lt;p&gt;Alternatively, you can log in to your &lt;b&gt;APP&lt;/b&gt; profile and remove the account connection via &lt;a href="{8}" target="_blank"&gt;My profile&lt;/a&gt;.&lt;/p&gt;&#13;
+</Value>
+        </Property>
+        <Property>
+            <Name>CarriageReturns1</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">&lt;p&gt;Hallo {0},&lt;/p&gt;&#13;&#13;
+</Value>
+            <Value disabled="false">&lt;p&gt;Hello {0},&lt;/p&gt;&#13;&#13;
+</Value>
+        </Property>
+        <Property>
+            <Name>CarriageReturns2</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">&lt;p&gt;Hallo {0},&lt;/p&gt;&#13;&#13;
+foo</Value>
+            <Value disabled="false">&lt;p&gt;Hello {0},&lt;/p&gt;&#13;&#13;
+foo</Value>
+        </Property>
+        <Property>
+            <Name>CarriageReturns3</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">&lt;p&gt;Hallo {0},&lt;/p&gt;&#13;foo</Value>
+            <Value disabled="false">&lt;p&gt;Hello {0},&lt;/p&gt;&#13;foo</Value>
+        </Property>
+        <Property>
+            <Name>CarriageReturns4</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">&#13;&lt;p&gt;Hallo {0},&lt;/p&gt;</Value>
+            <Value disabled="false">&#13;&lt;p&gt;Hello {0},&lt;/p&gt;</Value>
+        </Property>
+        <Property>
+            <Name>CarriageReturns5</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">foo&#13;
+
+&#13;	</Value>
+            <Value disabled="false">foo&#13;
+
+&#13;	</Value>
+        </Property>
+        <Property>
+            <Name>CarriageReturns6</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">foo&#13;
+&#13;
+</Value>
+            <Value disabled="false">foo&#13;
+&#13;
+</Value>
+        </Property>
+        <Property>
+            <Name>CarriageReturns7</Name>
+            <Disabled>false</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">foo&#13;
+
+&#13;
+</Value>
+            <Value disabled="false">foo&#13;
+
+&#13;
+</Value>
+        </Property>
+        <Property>
+            <Name>CarriageReturns1C</Name>
+            <Disabled>true</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">&lt;p&gt;Hallo {0},&lt;/p&gt;&#13;&#13;
+</Value>
+            <Value disabled="false">&lt;p&gt;Hello {0},&lt;/p&gt;&#13;&#13;
+</Value>
+        </Property>
+        <Property>
+            <Name>CarriageReturns2C</Name>
+            <Disabled>true</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">&lt;p&gt;Hallo {0},&lt;/p&gt;&#13;&#13;
+foo</Value>
+            <Value disabled="false">&lt;p&gt;Hello {0},&lt;/p&gt;&#13;&#13;
+foo</Value>
+        </Property>
+        <Property>
+            <Name>CarriageReturns3C</Name>
+            <Disabled>true</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">&lt;p&gt;Hallo {0},&lt;/p&gt;&#13;foo</Value>
+            <Value disabled="false">&lt;p&gt;Hello {0},&lt;/p&gt;&#13;foo</Value>
+        </Property>
+        <Property>
+            <Name>CarriageReturns4C</Name>
+            <Disabled>true</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">&#13;&lt;p&gt;Hallo {0},&lt;/p&gt;</Value>
+            <Value disabled="false">&#13;&lt;p&gt;Hello {0},&lt;/p&gt;</Value>
+        </Property>
+        <Property>
+            <Name>CarriageReturns5C</Name>
+            <Disabled>true</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">foo&#13;
+
+&#13;	</Value>
+            <Value disabled="false">foo&#13;
+
+&#13;	</Value>
+        </Property>
+        <Property>
+            <Name>CarriageReturns6C</Name>
+            <Disabled>true</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">foo&#13;
+&#13;
+</Value>
+            <Value disabled="false">foo&#13;
+&#13;
+</Value>
+        </Property>
+        <Property>
+            <Name>CarriageReturns7C</Name>
+            <Disabled>true</Disabled>
+            <MultiLine>true</MultiLine>
+            <Value disabled="false">foo&#13;
+
+&#13;
+</Value>
+            <Value disabled="false">foo&#13;
+
+&#13;
+</Value>
         </Property>
     </Records>
 </MultiProperties>

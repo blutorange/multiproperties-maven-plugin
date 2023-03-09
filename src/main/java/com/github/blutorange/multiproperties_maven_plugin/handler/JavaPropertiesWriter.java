@@ -9,6 +9,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 final class JavaPropertiesWriter {
   private static final String LINE_SEPARATOR = "\r\n";
@@ -37,9 +38,17 @@ final class JavaPropertiesWriter {
     writer.write(escapeKey(key));
     writer.write("=");
     if (value != null) {
-      writer.write(escapeValue(value, charset));
+      writer.write(escapeValue(trimEndValue(normalizeLineBreaks(value)), charset));
     }
     writer.write(LINE_SEPARATOR);
+  }
+
+  private String trimEndValue(String value) {
+    return Pattern.compile("\\n$").matcher(value).replaceFirst("");
+  }
+
+  private String normalizeLineBreaks(String value) {
+    return value.replaceAll("(\\r\\n|\\r|\\n)", "\n");
   }
 
   public void writeKeyValuePairAsComment(String key, String value) throws IOException {

@@ -35,7 +35,7 @@ public class JavaPropertiesWriterTest {
   public void testWriteKeyValuePair() throws IOException {
     assertWritesKeyValuePair("key=", "key", null, quirksFull);
     assertWritesKeyValuePair("delimiterCharacters\\:\\=\\ =foobar", "delimiterCharacters:= ", "foobar", quirksFull);
-    assertWritesKeyValuePair("key=Line\\rbreak\\n\\\n\ttab\\tfeed\\f", "key", "Line\rbreak\ntab\tfeed\f", quirksFull);
+    assertWritesKeyValuePair("key=Line\\n\\\n\tbreak\\n\\\n\ttab\\tfeed\\f", "key", "Line\rbreak\ntab\tfeed\f", quirksFull);
     assertWritesKeyValuePair("key=Line\\n\\\n\t\\  break", "key", "Line\n  break", quirksFull);
     assertWritesKeyValuePair("key=c\\:\\\\wiki\\\\templates", "key", "c:\\wiki\\templates", quirksFull);
     assertWritesKeyValuePair("key=c\\:\\\\wiki\\\\templates", "key", "c:\\wiki\\templates", quirksNone);
@@ -63,28 +63,37 @@ public class JavaPropertiesWriterTest {
     assertWritesKeyValuePair("key=[\\]", "key", "[\\]", StandardCharsets.UTF_16BE, quirksFull);
     assertWritesKeyValuePair("key=[\\]", "key", "[\\]", StandardCharsets.UTF_16LE, quirksFull);
     assertWritesKeyValuePair("key=[\\]", "key", "[\\]", StandardCharsets.US_ASCII, quirksFull);
+    assertWritesKeyValuePair("key=\\n\\\n\tvalue", "key", "\rvalue", quirksFull);
+    assertWritesKeyValuePair("key=\\n\\\n\tvalue", "key", "\nvalue", quirksFull);
+    assertWritesKeyValuePair("key=value", "key", "value\r", quirksFull);
+    assertWritesKeyValuePair("key=value", "key", "value\n", quirksFull);
+    assertWritesKeyValuePair("key=value", "key", "value\r\n", quirksFull);
+    assertWritesKeyValuePair("key=value\\n\\\n\t\\n\\\n\t", "key", "value\r\n\n\r", quirksFull);
+    assertWritesKeyValuePair("key=value\\n\\\n\t\\n\\\n\t\\n\\\n\t\\t", "key", "value\r\n\n\r\t", quirksFull);
+    assertWritesKeyValuePair("key=value\\n\\\n\t\\n\\\n\tfoo", "key", "value\r\r\nfoo", quirksFull);
+    assertWritesKeyValuePair("key=<p>Hallo</p>\\n\\\n\t", "key", "<p>Hallo</p>\r\r\n", quirksFull);
   }
 
   @Test
   public void testWriteKeyValuePairAsComment() throws IOException {
     assertWritesKeyValuePairAsComment("#delimiterCharacters\\:\\=\\ =foobar", "delimiterCharacters:= ", "foobar", quirksNone);
-    assertWritesKeyValuePairAsComment("#key=Line\\rbreak\\n\\\n#\ttab\\tfeed\\f", "key", "Line\rbreak\ntab\tfeed\f", quirksNone);
+    assertWritesKeyValuePairAsComment("#key=Line\\n\\\n#\tbreak\\n\\\n#\ttab\\tfeed\\f", "key", "Line\rbreak\ntab\tfeed\f", quirksNone);
     assertWritesKeyValuePairAsComment("#key=c\\:\\\\wiki\\\\templates", "key", "c:\\wiki\\templates", quirksNone);
     assertWritesKeyValuePairAsComment("#key=\\u3053\\u3093\\u306B\\u3061\\u306F", "key", "こんにちは", quirksNone);
     assertWritesKeyValuePairAsComment("#key=\\u0001\\uF4AB", "key", "\u0001\uf4ab", quirksNone);
     assertWritesKeyValuePairAsComment("#key=\\  foobar  ", "key", "  foobar  ", quirksNone);
     assertWritesKeyValuePairAsComment("#key=foo\\n\\\n#\tbar", "key", "foo\nbar", quirksNone);
-    assertWritesKeyValuePairAsComment("#key=foo\\r\\n\\\n#\tbar", "key", "foo\r\nbar", quirksNone);
+    assertWritesKeyValuePairAsComment("#key=foo\\n\\\n#\tbar", "key", "foo\r\nbar", quirksNone);
 
     assertWritesKeyValuePairAsComment("#delimiterCharacters\\:\\=\\ =foobar", "delimiterCharacters:= ", "foobar", quirksFull);
-    assertWritesKeyValuePairAsComment("#key=Line\\rbreak\\n\\\n\ttab\\tfeed\\f", "key", "Line\rbreak\ntab\tfeed\f", quirksFull);
+    assertWritesKeyValuePairAsComment("#key=Line\\n\\\n\tbreak\\n\\\n\ttab\\tfeed\\f", "key", "Line\rbreak\ntab\tfeed\f", quirksFull);
     assertWritesKeyValuePairAsComment("#key=c\\:\\\\wiki\\\\templates", "key", "c:\\wiki\\templates", quirksFull);
     assertWritesKeyValuePairAsComment("#key=c\\:\\\\wiki\\\\templates", "key", "c:\\wiki\\templates", quirksNone);
     assertWritesKeyValuePairAsComment("#key=\\u3053\\u3093\\u306B\\u3061\\u306F", "key", "こんにちは", quirksFull);
     assertWritesKeyValuePairAsComment("#key=\\u0001\\uF4AB", "key", "\u0001\uf4ab", quirksFull);
     assertWritesKeyValuePairAsComment("#key=\\  foobar  ", "key", "  foobar  ", quirksFull);
     assertWritesKeyValuePairAsComment("#key=foo\\n\\\n\tbar", "key", "foo\nbar", quirksFull);
-    assertWritesKeyValuePairAsComment("#key=foo\\r\\n\\\n\tbar", "key", "foo\r\nbar", quirksFull);
+    assertWritesKeyValuePairAsComment("#key=foo\\n\\\n\tbar", "key", "foo\r\nbar", quirksFull);
   }
 
   @Test
