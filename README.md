@@ -42,13 +42,11 @@ Other than that, it should generate the same output as the Eclipse addon, includ
 Simple properties handler below if you don't care about producing exactly the same output as the Eclipse add-on):
 
 * When `Write disabled properties as comment` is turned on and a multiline property is disabled, the Eclipse addon
-  fails to properly comment lines other than the first line of the multiline property, which is a bug. This plugin adds
-  the `#` before each line.
-* Backslashes `\` in the value of a property are properly escaped as two backslashes `\\`. The Eclipse add-on fails to
-  do so when the file encoding is not ISO_8859_1.
-* Characters not representable in US-ASCII are escaped when US-ASCII is selected as the encoding. The Eclipse add-on fails
-  to escape such characters for US-ASCII, resulting in question marks `?` being written to the properties file.
-
+  fails to properly comment lines other than the first line of the multiline property.
+* Backslashes `\` in the value of a property are not escaped as two backslashes `\\`.
+* Characters not representable in US-ASCII are not escaped when US-ASCII is selected as the encoding. The Eclipse
+  add-on fails to escape such characters for US-ASCII, resulting in question marks `?` being written to the properties
+  file.
 
 Note that the setting `Insert description of column in the beginning as comment` currently does not do what it advertises, it only add a line break at the beginning of the file. This plugin intentionally reproduces this behavior as I would not consider that to be
 a major bug and it does not result in broken properties files or missing data.
