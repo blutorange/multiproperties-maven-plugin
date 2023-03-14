@@ -125,3 +125,7 @@ set the handler to `None`). You can use it like this:
 To run IT tests with debugging:
 
 > mvn verify -P run-its -Dinvoker.mavenOpts="-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9001"
+
+## Release
+
+> mvn clean deploy -P release

@@ -4,10 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.blutorange</groupId>
 	<artifactId>multiproperties-maven-plugin</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.1.0</version>
 	<packaging>maven-plugin</packaging>
 	<name>multiproperties-maven-plugin Maven Plugin</name>
 	<url>https://github.com/blutorange/multiproperties-maven-plugin</url>
+	<description>Generate properties files from a multiproperties file during the build process, independent of the Eclipse IDE.</description>
 	<organization>
 		<name>Andre Wachsmuth</name>
 		<url>http://github.com/blutorange</url>
